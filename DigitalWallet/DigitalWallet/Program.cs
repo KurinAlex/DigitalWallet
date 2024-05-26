@@ -1,6 +1,9 @@
 using DigitalWallet.Data;
 using DigitalWallet.Models;
+using DigitalWallet.Services;
+
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +17,9 @@ builder.Services.AddIdentity<Client, IdentityRole<Guid>>(o => o.SignIn.RequireCo
     .AddDefaultUI();
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 var app = builder.Build();
 

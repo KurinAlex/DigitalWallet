@@ -1,10 +1,43 @@
 ﻿@page
+@using DigitalWallet.Models
+@using Microsoft.AspNetCore.Identity
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@inject SignInManager<Client> SignInManager
+
+<div class="row justify-content-md-center text-center">
+    <div class="col-md-6">
+        <h1 class="display-4">Welcome to DigitalWallet!</h1>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            @if (Model.Wallet == null)
+            {
+                <div>
+                    <a class="btn btn-lg btn-primary w-100" asp-page="./WalletDetails">Create wallet</a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a class="btn btn-lg btn-primary w-100 m-1" asp-page="./WalletDetails">My wallet</a>
+                </div>
+                <div>
+                    <a class="btn btn-lg btn-primary w-100 m-1" asp-page="./DepositFunds">Deposit Funds</a>
+                </div>
+                <div>
+                    <a class="btn btn-lg btn-primary w-100 m-1" asp-page="./TransferFunds">Transfer Funds</a>
+                </div>
+                <div>
+                    <button class="btn btn-lg btn-primary w-100 m-1">Make a Payment</button>
+                </div>
+            }
+        }
+        else
+        {
+            <p>You must log in</p>
+        }
+    </div>
 </div>

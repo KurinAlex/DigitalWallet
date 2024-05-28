@@ -1,20 +1,27 @@
+using DigitalWallet.Models;
+using DigitalWallet.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace DigitalWallet.Pages
+namespace DigitalWallet.Pages;
+
+public class IndexModel(
+    ILogger<IndexModel> logger,
+    WalletManager walletManager,
+    UserManager<Client> userManager)
+    : PageModel
 {
-    public class IndexModel : PageModel
+    public Wallet? Wallet { get; set; }
+
+    public async Task<IActionResult> OnGetAsync()
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public IndexModel(ILogger<IndexModel> logger)
+        var client = await userManager.GetUserAsync(User);
+        if (client != null)
         {
-            _logger = logger;
+            Wallet = await walletManager.FindByClientAsync(client);
         }
 
-        public void OnGet()
-        {
-
-        }
+        return Page();
     }
 }

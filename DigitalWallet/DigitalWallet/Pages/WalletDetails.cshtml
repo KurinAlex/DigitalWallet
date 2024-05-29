@@ -5,25 +5,26 @@
     ViewData["Title"] = "Wallet Details";
 }
 
-<div class="row justify-content-md-center">
-    <div class="col-md-5">
-        <h1>@ViewData["Title"]</h1>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Wallet.Id)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Wallet.Id)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Wallet.Balance)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Wallet.Balance)
-            </dd>
-        </dl>
+<div class="h-100 row justify-content-md-center">
+    <div class="col-md-5 align-content-center">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+        <dt class="fs-4">
+            @Html.DisplayNameFor(model => model.Wallet.Id)
+        </dt>
+        <dd id="walletId" class="hover-bold fs-4">
+            @Html.DisplayFor(model => model.Wallet.Id)
+        </dd>
+        <dt class="fs-4">
+            @Html.DisplayNameFor(model => model.Wallet.Balance)
+        </dt>
+        <dd class="fs-4">
+            @Html.DisplayFor(model => model.Wallet.Balance)
+        </dd>
         <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript" src="~/js/copy.js"></script>
+}

@@ -36,18 +36,31 @@ public class WalletManager(ApplicationDbContext dbContext)
         return TrySaveChangesAsync();
     }
 
-    public Task<OperationResult> WithdrawAsync(Wallet wallet, decimal amount)
+    public async Task<OperationResult> WithdrawAsync(Wallet wallet, decimal amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+
+        if (amount > wallet.Balance)
+        {
+            return OperationResult.Failed("Wallet don't have enough funds.");
+        }
+
         wallet.Balance -= amount;
-        return TrySaveChangesAsync();
+        return await TrySaveChangesAsync();
     }
 
-    public Task<OperationResult> TransferAsync(Wallet from, Wallet to, decimal amount)
+    public async Task<OperationResult> TransferAsync(Wallet from, Wallet to, decimal amount)
     {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+
+        if (amount > from.Balance)
+        {
+            return OperationResult.Failed("Sender's wallet don't have enough funds.");
+        }
+
         from.Balance -= amount;
         to.Balance += amount;
-        return TrySaveChangesAsync();
+        return await TrySaveChangesAsync();
     }
 
     public Task<OperationResult> DeleteAsync(Wallet wallet)

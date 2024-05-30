@@ -9,14 +9,14 @@
         <h1 class="text-center">@ViewData["Title"]</h1>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group mb-2">
-                <label asp-for="Input.Receiver" class="control-label"></label>
-                <input asp-for="Input.Receiver" class="form-control" />
+            <div class="form-floating mb-2">
+                <input asp-for="Input.Receiver" class="form-control" placeholder="name@example.com" />
+                <label asp-for="Input.Receiver" class="form-label"></label>
                 <span asp-validation-for="Input.Receiver" class="text-danger"></span>
             </div>
-            <div class="form-group mb-3">
-                <label asp-for="Input.Amount" class="control-label"></label>
-                <input asp-for="Input.Amount" class="form-control" />
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Amount" class="form-control" placeholder="0,00" />
+                <label asp-for="Input.Amount" class="form-label"></label>
                 <span asp-validation-for="Input.Amount" class="text-danger"></span>
             </div>
             <input type="submit" value="Transfer" class="w-100 btn btn-lg btn-primary mb-2" />

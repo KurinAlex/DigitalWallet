@@ -1,24 +1,29 @@
 ﻿@page
-@model DigitalWallet.Pages.WalletDetailsModel
-
 @{
-    ViewData["Title"] = "Wallet Details";
+    ViewData["Title"] = "Support Contacts";
 }
 
 <div class="h-100 row justify-content-md-center">
     <div class="col-md-5 align-content-center">
         <h1 class="text-center">@ViewData["Title"]</h1>
         <dt class="fs-4">
-            @Html.DisplayNameFor(model => model.Wallet.Id)
+            Email
         </dt>
         <dd class="copy-content fs-4">
-            @Html.DisplayFor(model => model.Wallet.Id)
+            support@digital-wallet.com
         </dd>
         <dt class="fs-4">
-            @Html.DisplayNameFor(model => model.Wallet.Balance)
+            Phone
         </dt>
-        <dd class="fs-4">
-            @Html.DisplayFor(model => model.Wallet.Balance)
+        <dd class="copy-content fs-4">
+            +380-44-000-00-00
+        </dd>
+        <dt class="fs-4">
+            Address
+        </dt>
+        <dd class="copy-content fs-4">
+            123 Shevchenko Street<br>
+            12345 Kyiv, Ukraine
         </dd>
         <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>

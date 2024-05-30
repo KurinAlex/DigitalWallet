@@ -16,28 +16,28 @@
             @if (Model.Wallet == null)
             {
                 <div>
-                    <a class="btn btn-lg btn-primary w-100" asp-page="./WalletDetails">Create wallet</a>
+                    <a class="btn btn-primary w-100" asp-page="./WalletDetails">Create wallet</a>
                 </div>
             }
             else
             {
                 <div>
-                    <a class="btn btn-lg btn-primary w-100 m-1" asp-page="./WalletDetails">My wallet</a>
+                    <a class="btn btn-primary w-100 m-1" asp-page="./WalletDetails">My wallet</a>
                 </div>
                 <div>
-                    <a class="btn btn-lg btn-primary w-100 m-1" asp-page="./DepositFunds">Deposit Funds</a>
+                    <a class="btn btn-primary w-100 m-1" asp-page="./DepositFunds">Deposit Funds</a>
                 </div>
                 <div>
-                    <a class="btn btn-lg btn-primary w-100 m-1" asp-page="./TransferFunds">Transfer Funds</a>
+                    <a class="btn btn-primary w-100 m-1" asp-page="./TransferFunds">Transfer Funds</a>
                 </div>
                 <div>
-                    <button class="btn btn-lg btn-primary w-100 m-1">Make a Payment</button>
+                    <a class="btn btn-primary w-100 m-1" asp-page="./MakePayment">Make a Payment</a>
                 </div>
             }
         }
         else
         {
-            <p>You must log in</p>
+            <p>Please <a asp-area="Identity" asp-page="Account/Register">register</a> or <a asp-area="Identity" asp-page="Account/Login">log in</a> to be able to complete operations.</p>
         }
     </div>
 </div>

@@ -1,5 +1,6 @@
 ﻿using DigitalWallet.Data;
 using DigitalWallet.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalWallet.Services;
@@ -16,9 +17,21 @@ public class TransactionManager(ApplicationDbContext dbContext) : Manager<Transa
             .ToListAsync();
     }
 
-    public Task SetStatusAsync(Transaction transaction, TransactionStatus status)
+    public Task SetSucceededAndFinishAsync(Transaction transaction)
+    {
+        return SetStatusAndFinishAsync(transaction, TransactionStatus.Succeeded);
+    }
+
+    public Task SetFailedAndFinishAsync(Transaction transaction)
+    {
+        return SetStatusAndFinishAsync(transaction, TransactionStatus.Failed);
+    }
+
+
+    public Task SetStatusAndFinishAsync(Transaction transaction, TransactionStatus status)
     {
         transaction.Status = status;
+        transaction.End = DateTimeOffset.Now;
         return UpdateAsync(transaction);
     }
 }

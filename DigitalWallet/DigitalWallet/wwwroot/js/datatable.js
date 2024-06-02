@@ -6,7 +6,7 @@
         },
         columns: [
             {
-                data: 'time'
+                data: 'end'
             },
             {
                 data: 'amount'

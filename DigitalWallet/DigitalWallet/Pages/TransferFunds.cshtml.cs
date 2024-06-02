@@ -87,11 +87,11 @@ public class TransferFundsModel(
         try
         {
             await walletManager.TransferAsync(senderWallet, receiverWallet, Input.Amount);
-            await transactionManager.SetStatusAsync(transaction, TransactionStatus.Succeeded);
+            await transactionManager.SetSucceededAndFinishAsync(transaction);
         }
         catch
         {
-            await transactionManager.SetStatusAsync(transaction, TransactionStatus.Failed);
+            await transactionManager.SetFailedAndFinishAsync(transaction);
         }
 
         return RedirectToPage("TransactionDetails", new { id = transaction.Id });

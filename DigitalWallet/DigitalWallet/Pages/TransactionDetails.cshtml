@@ -9,7 +9,7 @@
     <div class="col-md-9 align-content-center">
         <h1 class="text-center m-3">@ViewData["Title"]</h1>
         <div class="row">
-            <dl class="col rounded border border-2">
+            <dl class="col rounded border border-2 p-2">
                 <dt class="fs-4 text-center">Summary</dt>
                 <dt class="fs-4">
                     @Html.DisplayNameFor(model => model.Transaction.Id)
@@ -24,16 +24,22 @@
                     @Html.DisplayFor(model => model.Transaction.Amount)
                 </dd>
                 <dt class="fs-4">
+                    @Html.DisplayNameFor(model => model.Transaction.Status)
+                </dt>
+                <dd class="fs-4">
+                    @Html.DisplayFor(model => model.Transaction.Status)
+                </dd>
+                <dt class="fs-4">
                     @Html.DisplayNameFor(model => model.Transaction.Start)
                 </dt>
                 <dd class="fs-4">
                     @Html.DisplayFor(model => model.Transaction.Start)
                 </dd>
                 <dt class="fs-4">
-                    @Html.DisplayNameFor(model => model.Transaction.Status)
+                    @Html.DisplayNameFor(model => model.Transaction.End)
                 </dt>
                 <dd class="fs-4">
-                    @Html.DisplayFor(model => model.Transaction.Status)
+                    @Html.DisplayFor(model => model.Transaction.End)
                 </dd>
             </dl>
             <div class="col">
@@ -57,7 +63,7 @@
                         </dd>
                     }
                 </dl>
-                <dl class="rounded border border-2 p-2">
+                <dl class="rounded border border-2 p-2 flex-fill">
                     <dt class="fs-4 text-center">
                         Receiver @(Model.ReceiverData.WalletId is null ? "(external)" : "")
                     </dt>

@@ -1,0 +1,26 @@
+﻿@page
+@model DigitalWallet.Pages.TransactionsModel
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<div class="h-100 row justify-content-md-center text-center">
+    <div class="col-md-7">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+        <table id="table" class="table table-striped w-100">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="~/js/datatable.js"></script>
+}

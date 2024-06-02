@@ -1,10 +1,15 @@
+using System.Globalization;
+
 using DigitalWallet.Data;
 using DigitalWallet.Models;
 using DigitalWallet.Services;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +21,14 @@ builder.Services.AddIdentity<Client, IdentityRole<Guid>>(o => o.SignIn.RequireCo
     .AddDefaultTokenProviders()
     .AddDefaultUI();
 
-builder.Services.AddRazorPages();
-
 builder.Services.AddScoped<WalletManager>();
+builder.Services.AddScoped<TransactionManager>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
+builder.Services.AddRazorPages();
+
+StripeConfiguration.ApiKey = builder.Configuration["StripeKey"];
 
 var app = builder.Build();
 
@@ -29,6 +37,16 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+var defaultCulture = new CultureInfo("en-US");
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(defaultCulture),
+    SupportedCultures = [defaultCulture],
+    SupportedUICultures = [defaultCulture]
+};
+
+app.UseRequestLocalization(localizationOptions);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

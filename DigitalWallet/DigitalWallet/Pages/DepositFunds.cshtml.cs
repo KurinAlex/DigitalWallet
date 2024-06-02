@@ -7,9 +7,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
+using Stripe.Checkout;
+
 namespace DigitalWallet.Pages;
 
-public class DepositFundsModel(UserManager<Client> userManager, WalletManager walletManager) : PageModel
+public class DepositFundsModel(
+    UserManager<Client> userManager,
+    WalletManager walletManager,
+    TransactionManager transactionManager)
+    : PageModel
 {
     [BindProperty]
     public InputModel Input { get; set; } = default!;
@@ -17,8 +23,7 @@ public class DepositFundsModel(UserManager<Client> userManager, WalletManager wa
     public class InputModel
     {
         [Required]
-        [Display(Name = "Amount")]
-        [Range(typeof(decimal), "0,01", "1000000")]
+        [Range(typeof(decimal), "0.01", "1000000")]
         public decimal Amount { get; set; }
     }
 
@@ -27,26 +32,89 @@ public class DepositFundsModel(UserManager<Client> userManager, WalletManager wa
         var client = await userManager.GetUserAsync(User);
         if (client == null)
         {
-            return Forbid();
+            return NotFound("Can't identify user.");
         }
 
         var wallet = await walletManager.FindByClientAsync(client);
         if (wallet is null)
         {
-            return Forbid();
+            return BadRequest("You can't deposit funds without wallet.");
         }
 
-        var result = await walletManager.DepositAsync(wallet, Input.Amount);
-        if (result.Succeeded)
+        var options = new SessionCreateOptions
         {
-            return LocalRedirect(Url.Content("~/"));
-        }
+            PaymentMethodTypes =
+            [
+                "card"
+            ],
+            Mode = "payment",
+            LineItems =
+            [
+                new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = Convert.ToInt64(decimal.Round(Input.Amount, 2) * 100),
+                        Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = "Deposit to Wallet",
+                        }
+                    },
+                    Quantity = 1
+                }
+            ],
+            SuccessUrl = Url.PageLink(pageHandler: "ProceedPayment") + "&sessionId={CHECKOUT_SESSION_ID}",
+            CancelUrl = Url.PageLink()
+        };
 
-        foreach (var error in result.Errors)
+        var service = new SessionService();
+        var session = await service.CreateAsync(options);
+        return Redirect(session.Url);
+    }
+
+    public async Task<IActionResult> OnGetProceedPaymentAsync(string sessionId)
+    {
+        var service = new SessionService();
+        var session = await service.GetAsync(sessionId);
+        if (session?.AmountTotal is null)
         {
-            ModelState.AddModelError(string.Empty,error);
+            return NotFound("Session with specified ID not found.");
         }
 
-        return Page();
+        var client = await userManager.GetUserAsync(User);
+        if (client is null)
+        {
+            return NotFound("User not found.");
+        }
+
+        var wallet = await walletManager.FindByClientAsync(client);
+        if (wallet is null)
+        {
+            return BadRequest();
+        }
+
+        var transaction = new Transaction
+        {
+            ReceiverId = wallet.Id,
+            ExternalCustomer = session.CustomerDetails.Email,
+            Amount = session.AmountTotal.Value / 100m,
+            Start = DateTimeOffset.Now,
+            Status = TransactionStatus.InProgress
+        };
+        
+        await transactionManager.CreateAsync(transaction);
+
+        try
+        {
+            await walletManager.DepositAsync(wallet, transaction.Amount);
+            await transactionManager.SetStatusAsync(transaction, TransactionStatus.Succeeded);
+        }
+        catch
+        {
+            await transactionManager.SetStatusAsync(transaction, TransactionStatus.Failed);
+        }
+
+        return RedirectToPage("TransactionDetails", new { id = transaction.Id });
     }
 }

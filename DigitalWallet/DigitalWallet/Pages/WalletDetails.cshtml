@@ -7,24 +7,27 @@
 
 <div class="h-100 row justify-content-md-center">
     <div class="col-md-5 align-content-center">
-        <h1 class="text-center">@ViewData["Title"]</h1>
-        <dt class="fs-4">
-            @Html.DisplayNameFor(model => model.Wallet.Id)
-        </dt>
-        <dd class="copy-content fs-4">
-            @Html.DisplayFor(model => model.Wallet.Id)
-        </dd>
-        <dt class="fs-4">
-            @Html.DisplayNameFor(model => model.Wallet.Balance)
-        </dt>
-        <dd class="fs-4">
-            @Html.DisplayFor(model => model.Wallet.Balance)
-        </dd>
+        <h1 class="text-center m-3">@ViewData["Title"]</h1>
+        <dl>
+            <dt class="fs-4">
+                @Html.DisplayNameFor(model => model.Wallet.Id)
+            </dt>
+            <dd class="copy-content fs-4">
+                @Html.DisplayFor(model => model.Wallet.Id)
+            </dd>
+            <dt class="fs-4">
+                @Html.DisplayNameFor(model => model.Wallet.Balance)
+            </dt>
+            <dd class="fs-4">
+                @Html.DisplayFor(model => model.Wallet.Balance)
+            </dd>
+        </dl>
         <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script type="text/javascript" src="~/js/copy.js"></script>
+    @{
+        await Html.RenderPartialAsync("_NotificationsPartial");
+    }
 }

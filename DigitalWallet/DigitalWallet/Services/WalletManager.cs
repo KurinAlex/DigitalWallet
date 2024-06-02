@@ -1,84 +1,49 @@
-﻿using DigitalWallet.Data;
+﻿using System.Security.Claims;
+using DigitalWallet.Data;
 using DigitalWallet.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalWallet.Services;
 
-public class WalletManager(ApplicationDbContext dbContext)
+public class WalletManager(ApplicationDbContext dbContext) : Manager<Wallet>(dbContext)
 {
-    public void SetClient(Wallet wallet, Guid clientId)
+    private readonly ApplicationDbContext _dbContext = dbContext;
+
+    public Task<Wallet?> FindByClientAsync(Client client)
     {
-        wallet.ClientId = clientId;
+        return _dbContext.Wallets.SingleOrDefaultAsync(w => w.ClientId == client.Id);
     }
 
-    public async Task<Wallet?> FindByIdAsync(Guid id)
+    public Task<Client?> GetClientAsync(Wallet wallet)
     {
-        return await dbContext.Wallets.FindAsync(id);
+        return _dbContext.Users.SingleOrDefaultAsync(u => u.Id == wallet.ClientId);
     }
 
-    public async Task<Wallet?> FindByClientAsync(Client client)
-    {
-        await dbContext.Entry(client).Reference(c => c.Wallet).LoadAsync();
-        return client.Wallet;
-    }
-
-    public async Task<OperationResult> CreateAsync(Wallet wallet)
-    {
-        await dbContext.Wallets.AddAsync(wallet);
-        return await TrySaveChangesAsync();
-    }
-
-    public Task<OperationResult> DepositAsync(Wallet wallet, decimal amount)
+    public Task DepositAsync(Wallet wallet, decimal amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+
         wallet.Balance += amount;
-        return TrySaveChangesAsync();
+        return UpdateAsync(wallet);
     }
 
-    public async Task<OperationResult> WithdrawAsync(Wallet wallet, decimal amount)
+    public Task WithdrawAsync(Wallet wallet, decimal amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
-
-        if (amount > wallet.Balance)
-        {
-            return OperationResult.Failed("Wallet don't have enough funds.");
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(wallet.Balance, amount);
 
         wallet.Balance -= amount;
-        return await TrySaveChangesAsync();
+        return UpdateAsync(wallet);
     }
 
-    public async Task<OperationResult> TransferAsync(Wallet from, Wallet to, decimal amount)
+    public Task TransferAsync(Wallet senderWallet, Wallet receiverWallet, decimal amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+        ArgumentOutOfRangeException.ThrowIfLessThan(senderWallet.Balance, amount);
 
-        if (amount > from.Balance)
-        {
-            return OperationResult.Failed("Sender's wallet don't have enough funds.");
-        }
-
-        from.Balance -= amount;
-        to.Balance += amount;
-        return await TrySaveChangesAsync();
-    }
-
-    public Task<OperationResult> DeleteAsync(Wallet wallet)
-    {
-        dbContext.Wallets.Remove(wallet);
-        return TrySaveChangesAsync();
-    }
-
-    private async Task<OperationResult> TrySaveChangesAsync()
-    {
-        try
-        {
-            await dbContext.SaveChangesAsync();
-            return OperationResult.Success;
-        }
-        catch (Exception ex)
-        {
-            return OperationResult.Failed(ex.Message);
-        }
+        senderWallet.Balance -= amount;
+        receiverWallet.Balance += amount;
+        return UpdateRangeAsync(senderWallet, receiverWallet);
     }
 }

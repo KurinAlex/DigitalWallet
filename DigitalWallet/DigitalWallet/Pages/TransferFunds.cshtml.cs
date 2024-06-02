@@ -9,7 +9,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DigitalWallet.Pages;
 
-public class TransferFundsModel(UserManager<Client> userManager, WalletManager walletManager) : PageModel
+public class TransferFundsModel(
+    UserManager<Client> userManager,
+    WalletManager walletManager,
+    TransactionManager transactionManager)
+    : PageModel
 {
     [BindProperty]
     public InputModel Input { get; set; } = default!;
@@ -20,7 +24,7 @@ public class TransferFundsModel(UserManager<Client> userManager, WalletManager w
         public string Receiver { get; set; } = default!;
 
         [Required]
-        [Range(typeof(decimal), "0,01", "1000000")]
+        [Range(typeof(decimal), "0.01", "1000000")]
         public decimal Amount { get; set; }
     }
 
@@ -30,51 +34,66 @@ public class TransferFundsModel(UserManager<Client> userManager, WalletManager w
         var clientFrom = await userManager.GetUserAsync(User);
         if (clientFrom == null)
         {
-            return Forbid();
+            return NotFound();
         }
 
-        var walletFrom = await walletManager.FindByClientAsync(clientFrom);
-        if (walletFrom is null)
+        var senderWallet = await walletManager.FindByClientAsync(clientFrom);
+        if (senderWallet is null)
         {
-            return Forbid();
+            return BadRequest();
         }
 
-        Wallet? walletTo = default;
+        Wallet? receiverWallet = default;
         var clientTo = await userManager.FindByEmailAsync(Input.Receiver);
 
         if (clientTo != null)
         {
-            walletTo = await walletManager.FindByClientAsync(clientTo);
+            receiverWallet = await walletManager.FindByClientAsync(clientTo);
         }
         else if (Guid.TryParse(Input.Receiver, out var walletToId))
         {
-            walletTo = await walletManager.FindByIdAsync(walletToId);
+            receiverWallet = await walletManager.FindByIdAsync(walletToId);
         }
 
-        if (walletTo is null)
+        if (receiverWallet is null)
         {
             var error = clientTo is null ? "Client or wallet not found." : "This client don't have wallet yet.";
             ModelState.AddModelError("Input.Receiver", error);
             return Page();
         }
 
-        if (walletTo == walletFrom)
+        if (receiverWallet == senderWallet)
         {
             ModelState.AddModelError(string.Empty, "You cannot transfer to yourself :)");
             return Page();
         }
 
-        var result = await walletManager.TransferAsync(walletFrom, walletTo, Input.Amount);
-        if (result.Succeeded)
+        if (senderWallet.Balance < Input.Amount)
         {
-            return LocalRedirect(Url.Content("~/"));
+            ModelState.AddModelError("Input.Amount", "You don't have enough funds.");
         }
 
-        foreach (var error in result.Errors)
+        var transaction = new Transaction
         {
-            ModelState.AddModelError(string.Empty, error);
+            SenderId = senderWallet.Id,
+            ReceiverId = receiverWallet.Id,
+            Amount = Input.Amount,
+            Start = DateTimeOffset.Now,
+            Status = TransactionStatus.InProgress
+        };
+
+        await transactionManager.CreateAsync(transaction);
+
+        try
+        {
+            await walletManager.TransferAsync(senderWallet, receiverWallet, Input.Amount);
+            await transactionManager.SetStatusAsync(transaction, TransactionStatus.Succeeded);
+        }
+        catch
+        {
+            await transactionManager.SetStatusAsync(transaction, TransactionStatus.Failed);
         }
 
-        return Page();
+        return RedirectToPage("TransactionDetails", new { id = transaction.Id });
     }
 }

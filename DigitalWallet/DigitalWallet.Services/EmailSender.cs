@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using DigitalWallet.Services.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace DigitalWallet.Services;
 
 public class EmailSender(
-    IOptions<AuthMessageSenderOptions> optionsAccessor,
+    IOptions<EmailSenderOptions> optionsAccessor,
     ILogger<EmailSender> logger)
     : IEmailSender
 {
     private readonly ILogger _logger = logger;
 
-    public AuthMessageSenderOptions Options { get; } = optionsAccessor.Value;
+    public EmailSenderOptions Options { get; } = optionsAccessor.Value;
 
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {

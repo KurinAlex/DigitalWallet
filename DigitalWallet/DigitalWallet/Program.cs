@@ -3,6 +3,7 @@ using System.Globalization;
 using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
 using DigitalWallet.Services;
+using DigitalWallet.Services.Models;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -24,7 +25,7 @@ builder.Services.AddIdentity<Client, IdentityRole<Guid>>(o => o.SignIn.RequireCo
 builder.Services.AddScoped<WalletManager>();
 builder.Services.AddScoped<TransactionManager>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
-builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+builder.Services.Configure<EmailSenderOptions>(builder.Configuration);
 
 builder.Services.AddRazorPages();
 

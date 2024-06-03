@@ -5,86 +5,79 @@
     ViewData["Title"] = "Transaction Details";
 }
 
-<div class="h-100 row justify-content-md-center">
-    <div class="col-md-9 align-content-center">
+<div class="h-100 row justify-content-center">
+    <div class="col-8 align-content-center">
         <h1 class="text-center m-3">@ViewData["Title"]</h1>
         <div class="row">
             <dl class="col rounded border border-2 p-2">
-                <dt class="fs-4 text-center">Summary</dt>
-                <dt class="fs-4">
+                <dt class="text-center">Summary</dt>
+                <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Id)
                 </dt>
-                <dd class="fs-4 copy-content">
+                <dd class=" copy-content">
                     @Html.DisplayFor(model => model.Transaction.Id)
                 </dd>
-                <dt class="fs-4">
+                <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Amount)
                 </dt>
-                <dd class="fs-4">
+                <dd >
                     @Html.DisplayFor(model => model.Transaction.Amount)
                 </dd>
-                <dt class="fs-4">
+                <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Status)
                 </dt>
-                <dd class="fs-4">
+                <dd >
                     @Html.DisplayFor(model => model.Transaction.Status)
                 </dd>
-                <dt class="fs-4">
+                <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Start)
                 </dt>
-                <dd class="fs-4">
+                <dd >
                     @Html.DisplayFor(model => model.Transaction.Start)
                 </dd>
-                <dt class="fs-4">
+                <dt>
                     @Html.DisplayNameFor(model => model.Transaction.End)
                 </dt>
-                <dd class="fs-4">
+                <dd >
                     @Html.DisplayFor(model => model.Transaction.End)
                 </dd>
             </dl>
             <div class="col">
                 <dl class="rounded border border-2 p-2">
-                    <dt class="fs-4 text-center">
-                        Sender @(Model.SenderData.WalletId is null ? "(external)" : "")
+                    <dt class="text-center">
+                        Sender @(Model.Transaction.SenderId is null ? "(external)" : "")
                     </dt>
-                    <dt class="fs-4">
-                        @Html.DisplayNameFor(model => model.SenderData.Email)
-                    </dt>
-                    <dd class="fs-4 copy-content">
-                        @Html.DisplayFor(model => model.SenderData.Email)
+                    <dt>Email</dt>
+                    <dd class="copy-content">
+                        @Html.DisplayFor(model => model.Transaction.SenderName)
                     </dd>
-                    @if (Model.SenderData.WalletId is not null)
+                    @if (Model.Transaction.SenderId is not null)
                     {
-                        <dt class="fs-4">
-                            @Html.DisplayNameFor(model => model.SenderData.WalletId)
-                        </dt>
-                        <dd class="fs-4 copy-content">
-                            @Html.DisplayFor(model => model.SenderData.WalletId)
+                        <dt>Wallet Id</dt>
+                        <dd class=" copy-content">
+                            @Html.DisplayFor(model => model.Transaction.SenderId)
                         </dd>
                     }
                 </dl>
                 <dl class="rounded border border-2 p-2 flex-fill">
-                    <dt class="fs-4 text-center">
-                        Receiver @(Model.ReceiverData.WalletId is null ? "(external)" : "")
+                    <dt class="text-center">
+                        Receiver @(Model.Transaction.ReceiverId is null ? "(external)" : "")
                     </dt>
-                    <dt class="fs-4">
-                        @Html.DisplayNameFor(model => model.ReceiverData.Email)
-                    </dt>
-                    <dd class="fs-4 copy-content">
-                        @Html.DisplayFor(model => model.ReceiverData.Email)
+                    <dt>Email</dt>
+                    <dd class=" copy-content">
+                        @Html.DisplayFor(model => model.Transaction.ReceiverName)
                     </dd>
-                    @if (Model.ReceiverData.WalletId is not null)
+                    @if (Model.Transaction.ReceiverId is not null)
                     {
-                        <dt class="fs-4">
-                            @Html.DisplayNameFor(model => model.ReceiverData.WalletId)
-                        </dt>
-                        <dd class="fs-4 copy-content">
-                            @Html.DisplayFor(model => model.ReceiverData.WalletId)
+                        <dt>Wallet Id</dt>
+                        <dd class=" copy-content">
+                            @Html.DisplayFor(model => model.Transaction.ReceiverId)
                         </dd>
                     }
                 </dl>
             </div>
         </div>
+        <a asp-page="/Transactions" class="w-100 btn btn-lg btn-primary">To Transactions List</a>
         <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>
 </div>

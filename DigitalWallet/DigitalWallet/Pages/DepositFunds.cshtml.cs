@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using DigitalWallet.Data.Models;
+using DigitalWallet.Helpers;
 using DigitalWallet.Services;
 
 using Microsoft.AspNetCore.Identity;
@@ -32,13 +33,13 @@ public class DepositFundsModel(
         var client = await userManager.GetUserAsync(User);
         if (client == null)
         {
-            return NotFound("Can't identify user.");
+            return ActionResultHelper.GetClientNotFoundResult();
         }
 
         var wallet = await walletManager.FindByClientAsync(client);
         if (wallet is null)
         {
-            return BadRequest("You can't deposit funds without wallet.");
+            return ActionResultHelper.GetClientDoesNotHaveWalletResult();
         }
 
         var options = new SessionCreateOptions
@@ -79,31 +80,23 @@ public class DepositFundsModel(
         var session = await service.GetAsync(sessionId);
         if (session?.AmountTotal is null)
         {
-            return NotFound("Session with specified ID not found.");
+            return ActionResultHelper.GetEntityNotFoundResult("Session");
         }
 
         var client = await userManager.GetUserAsync(User);
         if (client is null)
         {
-            return NotFound("User not found.");
+            return ActionResultHelper.GetClientNotFoundResult();
         }
 
         var wallet = await walletManager.FindByClientAsync(client);
         if (wallet is null)
         {
-            return BadRequest();
+            return ActionResultHelper.GetClientDoesNotHaveWalletResult();
         }
 
-        var transaction = new Transaction
-        {
-            ReceiverId = wallet.Id,
-            ExternalCustomer = session.CustomerDetails.Email,
-            Amount = session.AmountTotal.Value / 100m,
-            Start = DateTimeOffset.Now,
-            Status = TransactionStatus.InProgress
-        };
-
-        await transactionManager.CreateAsync(transaction);
+        var transaction = await transactionManager.StartTransactionAsync(session.AmountTotal.Value / 100m, receiverId: wallet.Id,
+            externalCustomer: session.CustomerDetails.Email);
 
         try
         {

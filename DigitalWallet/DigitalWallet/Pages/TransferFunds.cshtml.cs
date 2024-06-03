@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using DigitalWallet.Data.Models;
+using DigitalWallet.Helpers;
 using DigitalWallet.Services;
 
 using Microsoft.AspNetCore.Identity;
@@ -31,24 +32,30 @@ public class TransferFundsModel(
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var clientFrom = await userManager.GetUserAsync(User);
-        if (clientFrom == null)
+        var senderClient = await userManager.GetUserAsync(User);
+        if (senderClient == null)
         {
-            return NotFound();
+            return ActionResultHelper.GetClientNotFoundResult();
         }
 
-        var senderWallet = await walletManager.FindByClientAsync(clientFrom);
+        var senderWallet = await walletManager.FindByClientAsync(senderClient);
         if (senderWallet is null)
         {
-            return BadRequest();
+            return ActionResultHelper.GetClientDoesNotHaveWalletResult();
+        }
+
+        if (senderWallet.Balance < Input.Amount)
+        {
+            ModelState.AddModelError("Input.Amount", "You don't have enough funds.");
+            return Page();
         }
 
         Wallet? receiverWallet = default;
-        var clientTo = await userManager.FindByEmailAsync(Input.Receiver);
+        var receiverClient = await userManager.FindByEmailAsync(Input.Receiver);
 
-        if (clientTo != null)
+        if (receiverClient is not null)
         {
-            receiverWallet = await walletManager.FindByClientAsync(clientTo);
+            receiverWallet = await walletManager.FindByClientAsync(receiverClient);
         }
         else if (Guid.TryParse(Input.Receiver, out var walletToId))
         {
@@ -57,32 +64,19 @@ public class TransferFundsModel(
 
         if (receiverWallet is null)
         {
-            var error = clientTo is null ? "Client or wallet not found." : "This client don't have wallet yet.";
+            var error = receiverClient is null ? "Client or wallet not found." : "This client don't have wallet yet.";
             ModelState.AddModelError("Input.Receiver", error);
             return Page();
         }
 
         if (receiverWallet == senderWallet)
         {
-            ModelState.AddModelError(string.Empty, "You cannot transfer to yourself :)");
+            ModelState.AddModelError("Input.Receiver", "You cannot transfer to yourself :)");
             return Page();
         }
 
-        if (senderWallet.Balance < Input.Amount)
-        {
-            ModelState.AddModelError("Input.Amount", "You don't have enough funds.");
-        }
-
-        var transaction = new Transaction
-        {
-            SenderId = senderWallet.Id,
-            ReceiverId = receiverWallet.Id,
-            Amount = Input.Amount,
-            Start = DateTimeOffset.Now,
-            Status = TransactionStatus.InProgress
-        };
-
-        await transactionManager.CreateAsync(transaction);
+        var transaction = await transactionManager.StartTransactionAsync(Input.Amount, senderId: senderWallet.Id,
+            receiverId: receiverWallet.Id);
 
         try
         {

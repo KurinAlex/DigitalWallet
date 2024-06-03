@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using DigitalWallet.Data.Models;
+using DigitalWallet.Helpers;
 using DigitalWallet.Services;
 
 namespace DigitalWallet.Pages;
@@ -16,7 +17,7 @@ public class WalletDetailsModel(UserManager<Client> userManager, WalletManager w
         var client = await userManager.GetUserAsync(User);
         if (client == null)
         {
-            return NotFound("Can't identify user.");
+            return ActionResultHelper.GetClientNotFoundResult();
         }
 
         var wallet = await walletManager.FindByClientAsync(client);

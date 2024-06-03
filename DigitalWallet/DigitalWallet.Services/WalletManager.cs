@@ -13,11 +13,6 @@ public class WalletManager(ApplicationDbContext dbContext) : Manager<Wallet>(dbC
         return _dbContext.Wallets.SingleOrDefaultAsync(w => w.ClientId == client.Id);
     }
 
-    public Task<Client?> GetClientAsync(Wallet wallet)
-    {
-        return _dbContext.Users.SingleOrDefaultAsync(u => u.Id == wallet.ClientId);
-    }
-
     public Task DepositAsync(Wallet wallet, decimal amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);

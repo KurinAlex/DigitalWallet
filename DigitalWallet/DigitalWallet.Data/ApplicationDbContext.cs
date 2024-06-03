@@ -17,14 +17,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(builder);
 
         builder.Entity<Client>()
-            .HasOne<Wallet>()
-            .WithOne()
+            .HasOne(c => c.Wallet)
+            .WithOne(w => w.Client)
             .HasForeignKey<Wallet>(w => w.ClientId);
 
         builder.Entity<Wallet>()
             .HasMany<Transaction>()
-            .WithOne()
-            .HasForeignKey(t => t.SenderId)
+            .WithOne(w => w.Sender)
+            .HasForeignKey(t => t.SenderId);
+
+        builder.Entity<Wallet>()
+            .HasMany<Transaction>()
+            .WithOne(w => w.Receiver)
             .HasForeignKey(t => t.ReceiverId);
     }
 }

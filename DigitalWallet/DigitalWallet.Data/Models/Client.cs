@@ -2,4 +2,7 @@
 
 namespace DigitalWallet.Data.Models;
 
-public class Client : IdentityUser<Guid>, IEntity;
+public class Client : IdentityUser<Guid>, IEntity
+{
+    public Wallet? Wallet { get; set; }
+}

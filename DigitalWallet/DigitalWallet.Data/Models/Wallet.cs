@@ -7,4 +7,6 @@ public class Wallet : IEntity
     public decimal Balance { get; set; }
 
     public Guid ClientId { get; set; }
+
+    public Client Client { get; set; } = default!;
 }

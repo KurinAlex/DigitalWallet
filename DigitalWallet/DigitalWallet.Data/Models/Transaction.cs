@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DigitalWallet.Models;
+﻿namespace DigitalWallet.Data.Models;
 
 public class Transaction : IEntity
 {

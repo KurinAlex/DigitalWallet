@@ -1,6 +1,5 @@
-﻿using System.Security.Claims;
-using DigitalWallet.Data;
-using DigitalWallet.Models;
+﻿using DigitalWallet.Data;
+using DigitalWallet.Data.Models;
 
 using Microsoft.EntityFrameworkCore;
 

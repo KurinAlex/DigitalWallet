@@ -1,4 +1,4 @@
-﻿namespace DigitalWallet.Models;
+﻿namespace DigitalWallet.Data.Models;
 
 public class Wallet : IEntity
 {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-using DigitalWallet.Models;
+using DigitalWallet.Data.Models;
 using DigitalWallet.Services;
 
 namespace DigitalWallet.Pages;

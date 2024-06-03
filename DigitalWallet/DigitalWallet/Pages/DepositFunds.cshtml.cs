@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using DigitalWallet.Models;
+using DigitalWallet.Data.Models;
 using DigitalWallet.Services;
 
 using Microsoft.AspNetCore.Identity;
@@ -102,7 +102,7 @@ public class DepositFundsModel(
             Start = DateTimeOffset.Now,
             Status = TransactionStatus.InProgress
         };
-        
+
         await transactionManager.CreateAsync(transaction);
 
         try

@@ -1,5 +1,5 @@
 ﻿using DigitalWallet.Data;
-using DigitalWallet.Models;
+using DigitalWallet.Data.Models;
 
 using Microsoft.EntityFrameworkCore;
 

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using DigitalWallet.Models;
+using DigitalWallet.Data.Models;
 using DigitalWallet.Services;
 
 using Microsoft.AspNetCore.Identity;

@@ -34,14 +34,14 @@ public class TransactionManager(ApplicationDbContext dbContext) : Manager<Transa
 
     public async Task<Transaction> StartTransactionAsync(
         decimal amount,
-        Guid? senderId = null,
-        Guid? receiverId = null,
+        Wallet? sender = null,
+        Wallet? receiver = null,
         string? externalCustomer = null)
     {
         var transaction = new Transaction
         {
-            ReceiverId = receiverId,
-            SenderId = senderId,
+            Receiver = receiver,
+            Sender = sender,
             ExternalCustomer = externalCustomer,
             Amount = amount,
             Start = DateTimeOffset.Now,

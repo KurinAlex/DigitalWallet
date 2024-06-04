@@ -1,5 +1,6 @@
 ﻿using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalWallet.Services;
@@ -8,9 +9,18 @@ public class WalletManager(ApplicationDbContext dbContext) : Manager<Wallet>(dbC
 {
     private readonly ApplicationDbContext _dbContext = dbContext;
 
-    public Task<Wallet?> FindByClientAsync(Client client)
+    public async Task<Wallet?> FindByClientAsync(Client client)
     {
-        return _dbContext.Wallets.SingleOrDefaultAsync(w => w.ClientId == client.Id);
+        await _dbContext.Entry(client).Reference(c => c.Wallet).LoadAsync();
+        return client.Wallet;
+    }
+
+    public Task RemoveWalletFromClientAsync(Client client)
+    {
+        return _dbContext.Entry(client)
+            .Reference(c => c.Wallet)
+            .Query()
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.ClientId, (Guid?)null));
     }
 
     public Task DepositAsync(Wallet wallet, decimal amount)

@@ -14,7 +14,7 @@ public class TransactionsModel(
     TransactionManager transactionManager)
     : PageModel
 {
-    private record TransactionViewModel(Guid Id, decimal Amount, string? Subject, string Status, DateTime Time);
+    private record TransactionViewModel(Guid Id, decimal Amount, string? Subject, string Status, DateTimeOffset Time);
 
     public async Task<IActionResult> OnGetTransactionsAsync()
     {
@@ -34,9 +34,11 @@ public class TransactionsModel(
         var transactionsVm = transactions.Select(t => new TransactionViewModel(
             Id: t.Id,
             Status: t.Status.ToString(),
-            Time: t.Status == TransactionStatus.InProgress ? t.Start.DateTime : t.End.DateTime,
+            Time: t.Status == TransactionStatus.InProgress || t.End is null ? t.Start : t.End.Value,
             Amount: t.SenderId == wallet.Id ? -t.Amount : t.Amount,
-            Subject: t.SenderId == wallet.Id ? t.ReceiverName : t.SenderName
+            Subject: t.SenderId == wallet.Id
+                ? t.ReceiverName ?? "Wallet " + t.ReceiverId
+                : t.SenderName ?? "Wallet " + t.SenderId
         )).ToList();
 
         return new JsonResult(transactionsVm);

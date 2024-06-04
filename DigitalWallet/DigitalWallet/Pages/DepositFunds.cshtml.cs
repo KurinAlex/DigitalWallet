@@ -95,7 +95,7 @@ public class DepositFundsModel(
             return ActionResultHelper.GetClientDoesNotHaveWalletResult();
         }
 
-        var transaction = await transactionManager.StartTransactionAsync(session.AmountTotal.Value / 100m, receiverId: wallet.Id,
+        var transaction = await transactionManager.StartTransactionAsync(session.AmountTotal.Value / 100m, receiver: wallet,
             externalCustomer: session.CustomerDetails.Email);
 
         try

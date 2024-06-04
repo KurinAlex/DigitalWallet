@@ -5,9 +5,9 @@ VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWallet", "DigitalWallet\DigitalWallet.csproj", "{9EE83D14-914C-4245-B97F-786941C044B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalWallet.Data", "DigitalWallet.Data\DigitalWallet.Data.csproj", "{8EC83CE6-7D8F-4436-ACBC-F596EF508C26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWallet.Data", "DigitalWallet.Data\DigitalWallet.Data.csproj", "{8EC83CE6-7D8F-4436-ACBC-F596EF508C26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalWallet.Services", "DigitalWallet.Services\DigitalWallet.Services.csproj", "{33E164F4-41A0-449E-82AA-7EC584914D11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWallet.Services", "DigitalWallet.Services\DigitalWallet.Services.csproj", "{33E164F4-41A0-449E-82AA-7EC584914D11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

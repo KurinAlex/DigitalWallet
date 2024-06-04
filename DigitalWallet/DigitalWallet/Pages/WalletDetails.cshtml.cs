@@ -21,18 +21,11 @@ public class WalletDetailsModel(UserManager<Client> userManager, WalletManager w
         }
 
         var wallet = await walletManager.FindByClientAsync(client);
-        if (wallet is not null)
+        if (wallet is null)
         {
-            Wallet = wallet;
-            return Page();
+            return ActionResultHelper.GetClientDoesNotHaveWalletResult();
         }
 
-        wallet = new Wallet
-        {
-            ClientId = client.Id
-        };
-
-        await walletManager.CreateAsync(wallet);
         Wallet = wallet;
         return Page();
     }

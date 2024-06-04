@@ -20,37 +20,50 @@
                 <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Amount)
                 </dt>
-                <dd >
+                <dd>
                     @Html.DisplayFor(model => model.Transaction.Amount)
                 </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Status)
                 </dt>
-                <dd >
+                <dd>
                     @Html.DisplayFor(model => model.Transaction.Status)
                 </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Start)
                 </dt>
-                <dd >
+                <dd>
                     @Html.DisplayFor(model => model.Transaction.Start)
                 </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.Transaction.End)
-                </dt>
-                <dd >
-                    @Html.DisplayFor(model => model.Transaction.End)
-                </dd>
+                @if (Model.Transaction.End is not null)
+                {
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Transaction.End)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Transaction.End)
+                    </dd>
+                }
             </dl>
             <div class="col">
                 <dl class="rounded border border-2 p-2">
                     <dt class="text-center">
-                        Sender @(Model.Transaction.SenderId is null ? "(external)" : "")
+                        Sender
+                        @(Model.Transaction.SenderId is null ? "(external)" : "")
                     </dt>
                     <dt>Email</dt>
-                    <dd class="copy-content">
-                        @Html.DisplayFor(model => model.Transaction.SenderName)
-                    </dd>
+                    @if (Model.Transaction.SenderName is null)
+                    {
+                        <dd>
+                            <p class="text-danger">Client data was deleted</p>
+                        </dd>
+                    }
+                    else
+                    {
+                        <dd class="copy-content">
+                            @Html.DisplayFor(model => model.Transaction.SenderName)
+                        </dd>
+                    }
                     @if (Model.Transaction.SenderId is not null)
                     {
                         <dt>Wallet Id</dt>
@@ -61,12 +74,22 @@
                 </dl>
                 <dl class="rounded border border-2 p-2 flex-fill">
                     <dt class="text-center">
-                        Receiver @(Model.Transaction.ReceiverId is null ? "(external)" : "")
+                        Receiver
+                        @(Model.Transaction.ReceiverId is null ? "(external)" : "")
                     </dt>
                     <dt>Email</dt>
-                    <dd class=" copy-content">
-                        @Html.DisplayFor(model => model.Transaction.ReceiverName)
-                    </dd>
+                    @if (Model.Transaction.ReceiverName is null)
+                    {
+                        <dd>
+                            <p class="text-danger">Client data was deleted</p>
+                        </dd>
+                    }
+                    else
+                    {
+                        <dd class=" copy-content">
+                            @Html.DisplayFor(model => model.Transaction.ReceiverName)
+                        </dd>
+                    }
                     @if (Model.Transaction.ReceiverId is not null)
                     {
                         <dt>Wallet Id</dt>

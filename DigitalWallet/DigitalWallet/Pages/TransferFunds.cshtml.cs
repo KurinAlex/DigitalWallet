@@ -75,8 +75,8 @@ public class TransferFundsModel(
             return Page();
         }
 
-        var transaction = await transactionManager.StartTransactionAsync(Input.Amount, senderId: senderWallet.Id,
-            receiverId: receiverWallet.Id);
+        var transaction = await transactionManager.StartTransactionAsync(Input.Amount, sender: senderWallet,
+            receiver: receiverWallet);
 
         try
         {

@@ -1,5 +1,6 @@
 using System.Globalization;
 
+using DigitalWallet.Converters;
 using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
 using DigitalWallet.Services;
@@ -27,7 +28,8 @@ builder.Services.AddScoped<TransactionManager>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<EmailSenderOptions>(builder.Configuration);
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new DateTimeOffsetConverter()));
 
 StripeConfiguration.ApiKey = builder.Configuration["StripeKey"];
 

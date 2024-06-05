@@ -1,4 +1,6 @@
-﻿using DigitalWallet.Data.Models;
+﻿using System.Text.Json;
+using DigitalWallet.Converters;
+using DigitalWallet.Data.Models;
 using DigitalWallet.Helpers;
 using DigitalWallet.Services;
 
@@ -16,7 +18,7 @@ public class TransactionsModel(
 {
     private record TransactionViewModel(Guid Id, decimal Amount, string? Subject, string Status, DateTimeOffset Time);
 
-    public async Task<IActionResult> OnGetTransactionsAsync()
+    public async Task<IActionResult> OnGetAllTransactionsAsync()
     {
         var client = await clientManager.GetUserAsync(User);
         if (client is null)

@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     let table = $('#table').DataTable({
         ajax: {
-            url: 'Transactions?handler=Transactions',
+            url: 'Transactions?handler=AllTransactions',
             dataSrc: ''
         },
         columnDefs: [
@@ -20,7 +20,7 @@
             {
                 data: 'amount',
                 render: function (data, type) {
-                    return data < 0 ? getAmountSpan('danger', data) : getAmountSpan('success', data);
+                    return getAmountSpan(data < 0 ? 'danger' : 'success', data);
                 }
             },
             {
@@ -28,13 +28,13 @@
                 render: function (data, type) {
                     switch (data) {
                         case 'InProgress':
-                            return getIcon('In Progress', 'bi-arrow-repeat text-warning');
+                            return getIcon('In Progress', 'warning', 'arrow-repeat');
                         case 'Failed':
-                            return getIcon('Failed', 'bi-dash-circle text-danger');
+                            return getIcon('Failed', 'danger', 'dash-circle');
                         case 'Succeeded':
-                            return getIcon('Success', 'bi-check2-circle text-success');
+                            return getIcon('Success', 'success', 'check2-circle');
                         default:
-                            return getIcon('Unknown', 'bi-question-circle text-info');
+                            return getIcon('Unknown', 'info', 'question-circle');
                     }
                 }
             }
@@ -55,6 +55,6 @@ function getAmountSpan(textStyle, amount) {
     return `<span class="text-${textStyle}">${amount}$</span>`;
 }
 
-function getIcon(title, iconClass) {
-    return `<i title="${title}" class="bi ${iconClass}"></i>`;
+function getIcon(statusText, textStyle, iconStyle) {
+    return `<span class="badge text-bg-${textStyle}">${statusText} <i class="bi bi-${iconStyle}"></i></span>`;
 }

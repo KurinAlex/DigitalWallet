@@ -13,7 +13,19 @@ using Microsoft.EntityFrameworkCore;
 
 using Stripe;
 
+using Azure.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsProduction())
+{
+    var keyVaultUri = Environment.GetEnvironmentVariable("VaultUri");
+    if (keyVaultUri is not null)
+    {
+        var keyVaultEndpoint = new Uri(keyVaultUri);
+        builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+    }
+}
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connectionString));

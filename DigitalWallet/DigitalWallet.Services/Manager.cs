@@ -7,7 +7,7 @@ namespace DigitalWallet.Services;
 public class Manager<T>(ApplicationDbContext dbContext)
     where T : class, IEntity
 {
-    public Task<T?> FindByIdAsync(Guid id)
+    public Task<T?> FindByIdAsync(Guid? id)
     {
         return dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
     }

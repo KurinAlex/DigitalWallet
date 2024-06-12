@@ -8,9 +8,9 @@
 <div class="h-100 row justify-content-center">
     <div class="col-8 align-content-center">
         <h1 class="text-center m-3">@ViewData["Title"]</h1>
-        <div class="row">
-            <dl class="col rounded border border-2 p-2">
-                <dt class="text-center">Summary</dt>
+        <div class="row rounded border border-2 mx-0 mb-2">
+            <h5 class="text-center mb-2 border-bottom border-2 p-2">Summary</h5>
+            <dl class="col m-0 px-3">
                 <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Id)
                 </dt>
@@ -23,6 +23,17 @@
                 <dd>
                     @Html.DisplayFor(model => model.Transaction.Amount)
                 </dd>
+                @if (Model.Transaction.Description is not null)
+                {
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Transaction.Description)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Transaction.Description)
+                    </dd>
+                }
+            </dl>
+            <dl class="col m-0">
                 <dt>
                     @Html.DisplayNameFor(model => model.Transaction.Status)
                 </dt>
@@ -45,56 +56,75 @@
                     </dd>
                 }
             </dl>
-            <div class="col">
-                <dl class="rounded border border-2 p-2">
-                    <dt class="text-center">
-                        Sender
-                        @(Model.Transaction.SenderId is null ? "(external)" : "")
-                    </dt>
+        </div>
+        <div class="row mb-2 mx-0">
+            <div class="col rounded border border-2 p-0 me-1">
+                <h5 class="text-center border-bottom border-2 p-2">
+                    Sender @(Model.Transaction.IsExternalSender ? "(external)" : "")
+                </h5>
+                <dl class="px-3">
                     <dt>Email</dt>
-                    @if (Model.Transaction.SenderName is null)
+                    @if (Model.Transaction.IsInternalSender)
                     {
-                        <dd>
-                            <p class="text-danger">Client data was deleted</p>
-                        </dd>
-                    }
-                    else
-                    {
-                        <dd class="copy-content">
-                            @Html.DisplayFor(model => model.Transaction.SenderName)
-                        </dd>
-                    }
-                    @if (Model.Transaction.SenderId is not null)
-                    {
+                        @if (Model.Transaction.IsSenderClientDataDeleted)
+                        {
+                            <dd>
+                                <p class="text-danger">Client data was deleted</p>
+                            </dd>
+                        }
+                        else
+                        {
+                            <dd class="copy-content">
+                                @Html.DisplayFor(model => model.Transaction.SenderName)
+                            </dd>
+                        }
+
                         <dt>Wallet Id</dt>
                         <dd class=" copy-content">
                             @Html.DisplayFor(model => model.Transaction.SenderId)
                         </dd>
                     }
+                    else if (Model.Transaction.IsExternalSender)
+                    {
+                        <dd class="copy-content">
+                            @Html.DisplayFor(model => model.Transaction.SenderName)
+                        </dd>
+                    }
                 </dl>
-                <dl class="rounded border border-2 p-2 flex-fill">
-                    <dt class="text-center">
-                        Receiver
-                        @(Model.Transaction.ReceiverId is null ? "(external)" : "")
-                    </dt>
-                    <dt>Email</dt>
-                    @if (Model.Transaction.ReceiverName is null)
+            </div>
+            <div class="col rounded border border-2 p-0 ms-1">
+                <h5 class="text-center border-bottom border-2 p-2">
+                    Receiver @(Model.Transaction.IsCompanyReceiver ? "(company)" : "")
+                </h5>
+                <dl class="px-2">
+                    @if (Model.Transaction.IsInternalReceiver)
                     {
-                        <dd>
-                            <p class="text-danger">Client data was deleted</p>
-                        </dd>
-                    }
-                    else
-                    {
-                        <dd class=" copy-content">
-                            @Html.DisplayFor(model => model.Transaction.ReceiverName)
-                        </dd>
-                    }
-                    @if (Model.Transaction.ReceiverId is not null)
-                    {
+                        <dt>Email</dt>
+                        @if (Model.Transaction.IsReceiverClientDataDeleted)
+                        {
+                            <dd>
+                                <p class="text-danger">Client data was deleted</p>
+                            </dd>
+                        }
+                        else
+                        {
+                            <dd class="copy-content">
+                                @Html.DisplayFor(model => model.Transaction.ReceiverName)
+                            </dd>
+                        }
+
                         <dt>Wallet Id</dt>
                         <dd class=" copy-content">
                             @Html.DisplayFor(model => model.Transaction.ReceiverId)
+                        </dd>
+                    }
+                    else if (Model.Transaction.IsCompanyReceiver)
+                    {
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Transaction.Company)
+                        </dt>
+                        <dd class=" copy-content">
+                            @Html.DisplayFor(model => model.Transaction.ReceiverName)
                         </dd>
                     }
                 </dl>

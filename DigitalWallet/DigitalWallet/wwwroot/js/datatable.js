@@ -15,6 +15,9 @@
                 data: 'subject'
             },
             {
+                data: 'type'
+            },
+            {
                 data: 'time'
             },
             {
@@ -40,7 +43,7 @@
             }
         ],
         order: {
-            idx: 1,
+            idx: 2,
             dir: 'desc'
         }
     });
@@ -49,6 +52,8 @@
         let data = table.row(this).data();
         location.href = `/TransactionDetails?id=${data['id']}`;
     });
+
+    table.columns.adjust();
 });
 
 function getAmountSpan(textStyle, amount) {

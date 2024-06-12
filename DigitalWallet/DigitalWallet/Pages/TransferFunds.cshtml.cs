@@ -27,8 +27,10 @@ public class TransferFundsModel(
         [Required]
         [Range(typeof(decimal), "0.01", "1000000")]
         public decimal Amount { get; set; }
-    }
 
+        [StringLength(100)]
+        public string? Description { get; set; }
+    }
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -75,8 +77,11 @@ public class TransferFundsModel(
             return Page();
         }
 
-        var transaction = await transactionManager.StartTransactionAsync(Input.Amount, sender: senderWallet,
-            receiver: receiverWallet);
+        var transaction = await transactionManager.StartTransactionAsync(
+            amount: Input.Amount,
+            description: Input.Description,
+            senderId: senderWallet.Id,
+            receiverId: receiverWallet.Id);
 
         try
         {

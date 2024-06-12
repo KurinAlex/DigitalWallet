@@ -18,6 +18,8 @@ public class DepositFundsModel(
     TransactionManager transactionManager)
     : PageModel
 {
+    private const string DepositTransactionDescription = "Deposit to Wallet";
+
     [BindProperty]
     public InputModel Input { get; set; } = default!;
 
@@ -59,7 +61,7 @@ public class DepositFundsModel(
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = "Deposit to Wallet",
+                            Name = DepositTransactionDescription
                         }
                     },
                     Quantity = 1
@@ -95,8 +97,11 @@ public class DepositFundsModel(
             return ActionResultHelper.GetClientDoesNotHaveWalletResult();
         }
 
-        var transaction = await transactionManager.StartTransactionAsync(session.AmountTotal.Value / 100m, receiver: wallet,
-            externalCustomer: session.CustomerDetails.Email);
+        var transaction = await transactionManager.StartTransactionAsync(
+            amount: session.AmountTotal.Value / 100m,
+            description: DepositTransactionDescription,
+            receiverId: wallet.Id,
+            stripeSessionId: session.Id);
 
         try
         {

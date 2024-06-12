@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using DigitalWallet.Data.Models;
 using DigitalWallet.Helpers;
-using DigitalWallet.Services;
+using DigitalWallet.Services.Managers;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

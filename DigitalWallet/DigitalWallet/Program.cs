@@ -5,6 +5,7 @@ using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
 using DigitalWallet.Services;
 using DigitalWallet.Services.Models;
+using DigitalWallet.Services.Managers;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

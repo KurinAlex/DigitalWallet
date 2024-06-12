@@ -1,5 +1,5 @@
 using DigitalWallet.Data.Models;
-using DigitalWallet.Services;
+using DigitalWallet.Services.Managers;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

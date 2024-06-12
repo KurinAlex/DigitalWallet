@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
-using DigitalWallet.Data.Models;
+﻿using DigitalWallet.Data.Models;
 using DigitalWallet.Helpers;
-using DigitalWallet.Services;
+using DigitalWallet.Services.Managers;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DigitalWallet.Pages;
 

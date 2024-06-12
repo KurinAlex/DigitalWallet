@@ -12,6 +12,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public virtual DbSet<Transaction> Transactions { get; set; }
 
+    public virtual DbSet<Company> Companies { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -30,5 +32,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasMany<Transaction>()
             .WithOne(w => w.Receiver)
             .HasForeignKey(t => t.ReceiverId);
+
+        builder.Entity<Company>()
+            .HasMany<Transaction>()
+            .WithOne(w => w.Company)
+            .HasForeignKey(t => t.CompanyId);
     }
 }

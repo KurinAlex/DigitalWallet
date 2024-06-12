@@ -1,5 +1,6 @@
 ﻿using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalWallet.Services;
@@ -10,6 +11,11 @@ public class Manager<T>(ApplicationDbContext dbContext)
     public Task<T?> FindByIdAsync(Guid? id)
     {
         return dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
+    }
+
+    public Task<List<T>> GetAll()
+    {
+        return dbContext.Set<T>().ToListAsync();
     }
 
     public async Task CreateAsync(T entity)

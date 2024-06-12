@@ -1,6 +1,5 @@
 ﻿using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
-using DigitalWallet.Services.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -17,35 +16,41 @@ public class TransactionManager(ApplicationDbContext dbContext) : Manager<Transa
             .ThenInclude(w => w.Client)
             .Include(t => t.Receiver!)
             .ThenInclude(w => w.Client)
+            .Include(s => s.Company)
             .SingleOrDefaultAsync(w => w.Id == id);
     }
 
-    public async Task<IList<Transaction>> GetTransactionsAsync(Wallet wallet)
+    public Task<List<Transaction>> GetTransactionsAsync(Wallet wallet)
     {
-        return await _dbContext.Transactions
+        return _dbContext.Transactions
             .AsNoTracking()
             .Where(t => t.SenderId == wallet.Id || t.ReceiverId == wallet.Id)
             .Include(t => t.Sender!)
             .ThenInclude(w => w.Client)
             .Include(t => t.Receiver!)
             .ThenInclude(w => w.Client)
+            .Include(t => t.Company)
             .ToListAsync();
     }
 
     public async Task<Transaction> StartTransactionAsync(
         decimal amount,
-        Wallet? sender = null,
-        Wallet? receiver = null,
-        string? externalCustomer = null)
+        string? description = null,
+        Guid? senderId = null,
+        Guid? receiverId = null,
+        string? stripeSessionId = null,
+        Guid? companyId = null)
     {
         var transaction = new Transaction
         {
-            Receiver = receiver,
-            Sender = sender,
-            ExternalCustomer = externalCustomer,
             Amount = amount,
+            Description = description,
             Start = DateTimeOffset.Now,
-            Status = TransactionStatus.InProgress
+            Status = TransactionStatus.InProgress,
+            SenderId = senderId,
+            ReceiverId = receiverId,
+            StripeSessionId = stripeSessionId,
+            CompanyId = companyId,
         };
 
         await CreateAsync(transaction);
@@ -62,7 +67,7 @@ public class TransactionManager(ApplicationDbContext dbContext) : Manager<Transa
         return SetStatusAndFinishAsync(transaction, TransactionStatus.Failed);
     }
 
-    public Task SetStatusAndFinishAsync(Transaction transaction, TransactionStatus status)
+    private Task SetStatusAndFinishAsync(Transaction transaction, TransactionStatus status)
     {
         transaction.Status = status;
         transaction.End = DateTimeOffset.Now;

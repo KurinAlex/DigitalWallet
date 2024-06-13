@@ -1,5 +1,6 @@
 ﻿using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalWallet.Services.Managers;
@@ -12,11 +13,6 @@ public class Manager<T>(ApplicationDbContext dbContext)
         return dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
     }
 
-    public Task<List<T>> GetAll()
-    {
-        return dbContext.Set<T>().ToListAsync();
-    }
-
     public async Task CreateAsync(T entity)
     {
         await dbContext.Set<T>().AddAsync(entity);
@@ -25,13 +21,13 @@ public class Manager<T>(ApplicationDbContext dbContext)
 
     public Task UpdateAsync(T entity)
     {
-        dbContext.Entry(entity).State = EntityState.Modified;
+        dbContext.Set<T>().Update(entity);
         return dbContext.SaveChangesAsync();
     }
 
     public Task UpdateRangeAsync(params T[] entities)
     {
-        Array.ForEach(entities, entity => dbContext.Entry(entity).State = EntityState.Modified);
+        dbContext.Set<T>().UpdateRange(entities);
         return dbContext.SaveChangesAsync();
     }
 

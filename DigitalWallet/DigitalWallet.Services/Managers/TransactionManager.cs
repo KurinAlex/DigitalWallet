@@ -1,5 +1,7 @@
 ﻿using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
+using DigitalWallet.Services.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalWallet.Services.Managers;
@@ -19,7 +21,7 @@ public class TransactionManager(ApplicationDbContext dbContext) : Manager<Transa
             .SingleOrDefaultAsync(w => w.Id == id);
     }
 
-    public Task<List<Transaction>> GetTransactionsAsync(Wallet wallet)
+    public Task<List<TransactionViewModel>> GetTransactionsAsync(Wallet wallet)
     {
         return _dbContext.Transactions
             .AsNoTracking()
@@ -29,31 +31,16 @@ public class TransactionManager(ApplicationDbContext dbContext) : Manager<Transa
             .Include(t => t.Receiver!)
             .ThenInclude(w => w.Client)
             .Include(t => t.Company)
+            .Select(t => new TransactionViewModel
+            {
+                Id = t.Id,
+                Amount = t.SenderId == wallet.Id ? -t.Amount : t.Amount,
+                Subject = t.SenderId == wallet.Id ? t.ReceiverName : t.SenderName,
+                Status = t.Status.ToString(),
+                Type = t.Type.ToString(),
+                Time = t.End ?? t.Start
+            })
             .ToListAsync();
-    }
-
-    public async Task<Transaction> StartTransactionAsync(
-        decimal amount,
-        string? description = null,
-        Guid? senderId = null,
-        Guid? receiverId = null,
-        string? stripeSessionId = null,
-        Guid? companyId = null)
-    {
-        var transaction = new Transaction
-        {
-            Amount = amount,
-            Description = description,
-            Start = DateTimeOffset.Now,
-            Status = TransactionStatus.InProgress,
-            SenderId = senderId,
-            ReceiverId = receiverId,
-            StripeSessionId = stripeSessionId,
-            CompanyId = companyId,
-        };
-
-        await CreateAsync(transaction);
-        return transaction;
     }
 
     public Task SetSucceededAndFinishAsync(Transaction transaction)

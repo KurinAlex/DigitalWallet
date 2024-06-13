@@ -1,12 +1,12 @@
 ﻿using DigitalWallet.Data.Models;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalWallet.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<Client, IdentityRole<Guid>, Guid>(options)
+    : IdentityDbContext<Client, Role, Guid>(options)
 {
     public virtual DbSet<Wallet> Wallets { get; set; }
 
@@ -34,7 +34,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasForeignKey(t => t.ReceiverId);
 
         builder.Entity<Company>()
-            .HasMany<Transaction>()
+            .HasMany(c => c.Transactions)
             .WithOne(w => w.Company)
             .HasForeignKey(t => t.CompanyId);
     }

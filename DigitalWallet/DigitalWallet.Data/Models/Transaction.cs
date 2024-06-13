@@ -11,18 +11,20 @@ public class Transaction : IEntity
 
     public Guid Id { get; set; }
 
-    public decimal Amount { get; set; }
+    public required decimal Amount { get; init; }
 
     [StringLength(100)]
     public string? Description { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:O}")]
-    public DateTimeOffset Start { get; set; }
+    public required DateTimeOffset Start { get; init; }
 
     [DisplayFormat(DataFormatString = "{0:O}")]
     public DateTimeOffset? End { get; set; }
 
-    public TransactionStatus Status { get; set; }
+    public required TransactionStatus Status { get; set; }
+
+    public required TransactionType Type { get; init; }
 
     public Guid? SenderId { get; set; }
 
@@ -43,42 +45,17 @@ public class Transaction : IEntity
 
     public Company? Company { get; set; }
 
-    public string SenderName => StripeSession?.CustomerDetails.Email ?? Sender?.Client?.Email ?? "Wallet " + SenderId;
-
-    public string ReceiverName => Company?.Name ?? Receiver?.Client?.Email ?? "Wallet " + ReceiverId;
-
-    public bool IsInternalSender => SenderId is not null;
-
-    public bool IsExternalSender => StripeSessionId is not null;
-
-    public bool IsInternalReceiver => ReceiverId is not null;
-
-    public bool IsCompanyReceiver => CompanyId is not null;
-
-    public bool IsSenderClientDataDeleted => Sender?.Client is null;
-
-    public bool IsReceiverClientDataDeleted => Receiver?.Client is null;
-
-    public TransactionType TransactionType
+    public string? SenderName => Type switch
     {
-        get
-        {
-            if (IsExternalSender && IsInternalReceiver)
-            {
-                return TransactionType.Deposit;
-            }
+        TransactionType.Deposit => StripeSession?.CustomerDetails.Name ?? "External Client",
+        TransactionType.Transfer or TransactionType.Payment => Sender?.Client?.UserName ?? "Wallet " + SenderId,
+        _ => null
+    };
 
-            if (IsInternalSender && IsInternalReceiver)
-            {
-                return TransactionType.Transaction;
-            }
-
-            if (IsInternalSender && IsCompanyReceiver)
-            {
-                return TransactionType.Payment;
-            }
-
-            return TransactionType.Unknown;
-        }
-    }
+    public string? ReceiverName => Type switch
+    {
+        TransactionType.Deposit or TransactionType.Transfer => Receiver?.Client?.UserName ?? "Wallet " + ReceiverId,
+        TransactionType.Payment => Company?.Name ?? "Company",
+        _ => null
+    };
 }

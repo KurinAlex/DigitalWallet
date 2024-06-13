@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DigitalWallet.Migrations
+namespace DigitalWallet.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Create : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,21 @@ namespace DigitalWallet.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Site = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,7 +177,7 @@ namespace DigitalWallet.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -171,8 +186,43 @@ namespace DigitalWallet.Migrations
                         name: "FK_Wallets_AspNetUsers_ClientId",
                         column: x => x.ClientId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Start = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    End = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ReceiverId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    StripeSessionId = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Transactions_Wallets_ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "Wallets",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Transactions_Wallets_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "Wallets",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -215,10 +265,32 @@ namespace DigitalWallet.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Companies_Name",
+                table: "Companies",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_CompanyId",
+                table: "Transactions",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_ReceiverId",
+                table: "Transactions",
+                column: "ReceiverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_SenderId",
+                table: "Transactions",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Wallets_ClientId",
                 table: "Wallets",
                 column: "ClientId",
-                unique: true);
+                unique: true,
+                filter: "[ClientId] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -240,10 +312,16 @@ namespace DigitalWallet.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Wallets");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "Wallets");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

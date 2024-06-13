@@ -35,7 +35,7 @@ public class TransferFundsModel(
     public async Task<IActionResult> OnPostAsync()
     {
         var senderClient = await userManager.GetUserAsync(User);
-        if (senderClient == null)
+        if (senderClient is null)
         {
             return ActionResultHelper.GetClientNotFoundResult();
         }
@@ -77,11 +77,18 @@ public class TransferFundsModel(
             return Page();
         }
 
-        var transaction = await transactionManager.StartTransactionAsync(
-            amount: Input.Amount,
-            description: Input.Description,
-            senderId: senderWallet.Id,
-            receiverId: receiverWallet.Id);
+        var transaction = new Transaction
+        {
+            Amount = Input.Amount,
+            Description = Input.Description,
+            SenderId = senderWallet.Id,
+            ReceiverId = receiverWallet.Id,
+            Start = DateTimeOffset.Now,
+            Status = TransactionStatus.InProgress,
+            Type = TransactionType.Transfer
+        };
+
+        await transactionManager.CreateAsync(transaction);
 
         try
         {

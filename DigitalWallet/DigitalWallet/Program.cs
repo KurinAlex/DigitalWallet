@@ -3,9 +3,10 @@ using System.Globalization;
 using DigitalWallet.Converters;
 using DigitalWallet.Data;
 using DigitalWallet.Data.Models;
+using DigitalWallet.Helpers;
 using DigitalWallet.Services;
-using DigitalWallet.Services.Models;
 using DigitalWallet.Services.Managers;
+using DigitalWallet.Services.Options;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -31,7 +32,7 @@ if (builder.Environment.IsProduction())
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<Client, IdentityRole<Guid>>(o => o.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<Client, Role>(o => o.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
@@ -39,14 +40,14 @@ builder.Services.AddIdentity<Client, IdentityRole<Guid>>(o => o.SignIn.RequireCo
 builder.Services.AddScoped<WalletManager>();
 builder.Services.AddScoped<TransactionManager>();
 builder.Services.AddScoped<CompanyManager>();
-
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 builder.Services.Configure<EmailSenderOptions>(builder.Configuration.GetSection("EmailSenderOptions"));
+
+StripeConfiguration.ApiKey = builder.Configuration["StripeOptions:StripeKey"];
 
 builder.Services.AddRazorPages()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new DateTimeOffsetConverter()));
-
-StripeConfiguration.ApiKey = builder.Configuration["StripeOptions:StripeKey"];
 
 var app = builder.Build();
 
@@ -54,6 +55,13 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var configuration = services.GetRequiredService<IConfiguration>();
+    await DataSeeder.Seed(services, configuration);
 }
 
 var defaultCulture = new CultureInfo("en-US");

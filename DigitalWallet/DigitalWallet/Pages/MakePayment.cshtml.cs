@@ -47,7 +47,7 @@ public class MakePaymentModel(
     public async Task<IActionResult> OnPostAsync()
     {
         var client = await userManager.GetUserAsync(User);
-        if (client == null)
+        if (client is null)
         {
             return ActionResultHelper.GetClientNotFoundResult();
         }
@@ -65,11 +65,18 @@ public class MakePaymentModel(
             return Page();
         }
 
-        var transaction = await transactionManager.StartTransactionAsync(
-            amount: Input.Amount,
-            description: Input.Service,
-            senderId: wallet.Id,
-            companyId: Input.CompanyId);
+        var transaction = new Transaction
+        {
+            Amount = Input.Amount,
+            Description = Input.Service,
+            SenderId = wallet.Id,
+            CompanyId = Input.CompanyId,
+            Start = DateTimeOffset.Now,
+            Status = TransactionStatus.InProgress,
+            Type = TransactionType.Payment
+        };
+
+        await transactionManager.CreateAsync(transaction);
 
         try
         {
@@ -86,7 +93,7 @@ public class MakePaymentModel(
 
     private async Task PopulateCompanies(Guid? selectedId = null)
     {
-        var companies = await companyManager.GetAll();
+        var companies = await companyManager.GetAllAsync(true);
         Companies = new SelectList(companies, nameof(Company.Id), nameof(Company.Name), selectedId);
     }
 }

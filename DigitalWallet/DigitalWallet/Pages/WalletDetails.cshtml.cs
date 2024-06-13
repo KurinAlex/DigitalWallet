@@ -15,7 +15,7 @@ public class WalletDetailsModel(UserManager<Client> userManager, WalletManager w
     public async Task<IActionResult> OnGetAsync()
     {
         var client = await userManager.GetUserAsync(User);
-        if (client == null)
+        if (client is null)
         {
             return ActionResultHelper.GetClientNotFoundResult();
         }

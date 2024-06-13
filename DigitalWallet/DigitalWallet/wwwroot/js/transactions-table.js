@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    let table = $('#table').DataTable({
+    let table = $('#transactions-table').DataTable({
         ajax: {
             url: 'Transactions?handler=AllTransactions',
             dataSrc: ''

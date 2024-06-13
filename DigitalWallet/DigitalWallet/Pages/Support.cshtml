@@ -1,4 +1,5 @@
 ﻿@page
+@model SupportDataModel
 @{
     ViewData["Title"] = "Support Contacts";
 }
@@ -7,22 +8,22 @@
     <div class="col-md-5 align-content-center">
         <h1 class="text-center">@ViewData["Title"]</h1>
         <dt class="fs-4">
-            Email
+            @Html.DisplayNameFor(model => model.Email)
         </dt>
-        <dd class="copy-content fs-4">
-            support@digital-wallet.com
+        <dd class="fs-4">
+            @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class="fs-4">
-            Phone
+            @Html.DisplayNameFor(model => model.Phone)
         </dt>
         <dd class="copy-content fs-4">
-            +380-44-000-00-00
+            @Html.DisplayFor(model => model.Phone)
         </dd>
         <dt class="fs-4">
-            Address
+            @Html.DisplayNameFor(model => model.Address)
         </dt>
         <dd class="copy-content fs-4">
-            123 Shevchenko Street, 12345 Kyiv, Ukraine
+            @Html.DisplayFor(model => model.Address)
         </dd>
         <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>

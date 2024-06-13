@@ -13,7 +13,7 @@ public class CreateWalletModel(UserManager<Client> userManager, WalletManager wa
     public async Task<IActionResult> OnPost()
     {
         var client = await userManager.GetUserAsync(User);
-        if (client == null)
+        if (client is null)
         {
             return ActionResultHelper.GetClientNotFoundResult();
         }

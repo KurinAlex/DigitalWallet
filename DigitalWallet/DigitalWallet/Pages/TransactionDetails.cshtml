@@ -1,8 +1,9 @@
 ﻿@page
+@using DigitalWallet.Data.Models
 @model DigitalWallet.Pages.TransactionDetailsModel
 
 @{
-    ViewData["Title"] = "Transaction Details";
+    ViewData["Title"] = "Transfer Details";
 }
 
 <div class="h-100 row justify-content-center">
@@ -23,15 +24,12 @@
                 <dd>
                     @Html.DisplayFor(model => model.Transaction.Amount)
                 </dd>
-                @if (Model.Transaction.Description is not null)
-                {
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Transaction.Description)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.Transaction.Description)
-                    </dd>
-                }
+                <dt>
+                    @Html.DisplayNameFor(model => model.Transaction.Description)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Transaction.Description)
+                </dd>
             </dl>
             <dl class="col m-0">
                 <dt>
@@ -46,86 +44,162 @@
                 <dd>
                     @Html.DisplayFor(model => model.Transaction.Start)
                 </dd>
-                @if (Model.Transaction.End is not null)
-                {
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Transaction.End)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.Transaction.End)
-                    </dd>
-                }
+                <dt>
+                    @Html.DisplayNameFor(model => model.Transaction.End)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Transaction.End)
+                </dd>
             </dl>
         </div>
         <div class="row mb-2 mx-0">
             <div class="col rounded border border-2 p-0 me-1">
                 <h5 class="text-center border-bottom border-2 p-2">
-                    Sender @(Model.Transaction.IsExternalSender ? "(external)" : "")
+                    Sender @(Model.Transaction.Type == TransactionType.Deposit ? "(external)" : "")
                 </h5>
-                <dl class="px-3">
-                    <dt>Email</dt>
-                    @if (Model.Transaction.IsInternalSender)
+                <dl class="px-3 m-0">
+                    @switch (Model.Transaction.Type)
                     {
-                        @if (Model.Transaction.IsSenderClientDataDeleted)
-                        {
-                            <dd>
-                                <p class="text-danger">Client data was deleted</p>
-                            </dd>
-                        }
-                        else
-                        {
-                            <dd class="copy-content">
-                                @Html.DisplayFor(model => model.Transaction.SenderName)
-                            </dd>
-                        }
+                        case TransactionType.Deposit:
+                            <dt>Name</dt>
+                            if (Model.Transaction.StripeSession?.CustomerDetails?.Name is null)
+                            {
+                                <dd class="text-danger">
+                                    Data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="copy-content">
+                                    @Html.DisplayFor(model => model.Transaction.StripeSession!.CustomerDetails.Name)
+                                </dd>
+                            }
+                            <dt>Email</dt>
+                            if (Model.Transaction.StripeSession?.CustomerDetails?.Email is null)
+                            {
+                                <dd class="text-danger">
+                                    Data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="copy-content">
+                                    @Html.DisplayFor(model => model.Transaction.StripeSession!.CustomerDetails.Email)
+                                </dd>
+                            }
+                            break;
 
-                        <dt>Wallet Id</dt>
-                        <dd class=" copy-content">
-                            @Html.DisplayFor(model => model.Transaction.SenderId)
-                        </dd>
-                    }
-                    else if (Model.Transaction.IsExternalSender)
-                    {
-                        <dd class="copy-content">
-                            @Html.DisplayFor(model => model.Transaction.SenderName)
-                        </dd>
+                        case TransactionType.Transfer or TransactionType.Payment:
+                            <dt>Name</dt>
+                            if (Model.Transaction.Sender?.Client is null)
+                            {
+                                <dd class="text-danger">
+                                    Client data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="copy-content">
+                                    @Html.DisplayFor(model => model.Transaction.Sender!.Client!.UserName)
+                                </dd>
+                            }
+                            <dt>Wallet Id</dt>
+                            if (Model.Transaction.SenderId is null)
+                            {
+                                <dd class="text-danger">
+                                    Wallet data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="copy-content">
+                                    @Html.DisplayFor(model => model.Transaction.SenderId)
+                                </dd>
+                            }
+                            break;
                     }
                 </dl>
             </div>
             <div class="col rounded border border-2 p-0 ms-1">
                 <h5 class="text-center border-bottom border-2 p-2">
-                    Receiver @(Model.Transaction.IsCompanyReceiver ? "(company)" : "")
+                    Receiver @(Model.Transaction.Type == TransactionType.Payment ? "(company)" : "")
                 </h5>
-                <dl class="px-2">
-                    @if (Model.Transaction.IsInternalReceiver)
+                <dl class="px-2 m-0">
+                    @switch (Model.Transaction.Type)
                     {
-                        <dt>Email</dt>
-                        @if (Model.Transaction.IsReceiverClientDataDeleted)
-                        {
-                            <dd>
-                                <p class="text-danger">Client data was deleted</p>
-                            </dd>
-                        }
-                        else
-                        {
-                            <dd class="copy-content">
-                                @Html.DisplayFor(model => model.Transaction.ReceiverName)
-                            </dd>
-                        }
+                        case TransactionType.Deposit or TransactionType.Transfer:
+                            <dt>Name</dt>
+                            if (Model.Transaction.Receiver?.Client is null)
+                            {
+                                <dd class="text-danger">
+                                    Client data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="copy-content">
+                                    @Html.DisplayFor(model => model.Transaction.Receiver!.Client!.UserName)
+                                </dd>
+                            }
+                            <dt>Wallet Id</dt>
+                            if (Model.Transaction.ReceiverId is null)
+                            {
+                                <dd class="text-danger">
+                                    Wallet data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="copy-content">
+                                    @Html.DisplayFor(model => model.Transaction.ReceiverId)
+                                </dd>
+                            }
+                            break;
 
-                        <dt>Wallet Id</dt>
-                        <dd class=" copy-content">
-                            @Html.DisplayFor(model => model.Transaction.ReceiverId)
-                        </dd>
-                    }
-                    else if (Model.Transaction.IsCompanyReceiver)
-                    {
-                        <dt>
-                            @Html.DisplayNameFor(model => model.Transaction.Company)
-                        </dt>
-                        <dd class=" copy-content">
-                            @Html.DisplayFor(model => model.Transaction.ReceiverName)
-                        </dd>
+                        case TransactionType.Payment:
+                            <dt>Name</dt>
+                            if (Model.Transaction.Company is null)
+                            {
+                                <dd class="text-danger">
+                                    Company data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="copy-content">
+                                    @Html.DisplayFor(model => model.Transaction.Company!.Name)
+                                </dd>
+                            }
+                            <dt>
+                                Contacts
+                                @if (Model.Transaction.Company is not null)
+                                {
+                                    <select id="contacts">
+                                        <option value="email" selected>Email</option>
+                                        <option value="phone">Phone</option>
+                                        <option value="site">Url</option>
+                                    </select>
+                                }
+                            </dt>
+                            if (Model.Transaction.Company is null)
+                            {
+                                <dd class="text-danger">
+                                    Company data was deleted
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd id="content-email" class="content">
+                                    @Html.DisplayFor(model => model.Transaction.Company!.Email)
+                                </dd>
+                                <dd id="content-phone" class="copy-content content">
+                                    @Html.DisplayFor(model => model.Transaction.Company!.Phone)
+                                </dd>
+                                <dd id="content-site" class="content">
+                                    @Html.DisplayFor(model => model.Transaction.Company!.Site)
+                                </dd>
+                            }
+                            break;
                     }
                 </dl>
             </div>
@@ -139,4 +213,24 @@
     @{
         await Html.RenderPartialAsync("_NotificationsPartial");
     }
+    <script>
+        $(document).ready(function () {
+            showSelected();
+        });
+
+        $('#contacts').on('change',
+            function () {
+                $('.content').each(function () {
+                    $(this).hide();
+                });
+
+                showSelected();
+            });
+
+        function showSelected() {
+
+            const value = $('#contacts').find(":selected").val();
+            $(`#content-${value}`).show();
+        }
+    </script>
 }

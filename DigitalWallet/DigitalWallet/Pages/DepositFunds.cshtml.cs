@@ -33,7 +33,7 @@ public class DepositFundsModel(
     public async Task<IActionResult> OnPostAsync()
     {
         var client = await userManager.GetUserAsync(User);
-        if (client == null)
+        if (client is null)
         {
             return ActionResultHelper.GetClientNotFoundResult();
         }
@@ -97,11 +97,18 @@ public class DepositFundsModel(
             return ActionResultHelper.GetClientDoesNotHaveWalletResult();
         }
 
-        var transaction = await transactionManager.StartTransactionAsync(
-            amount: session.AmountTotal.Value / 100m,
-            description: DepositTransactionDescription,
-            receiverId: wallet.Id,
-            stripeSessionId: session.Id);
+        var transaction = new Transaction
+        {
+            Amount = session.AmountTotal.Value / 100m,
+            Description = DepositTransactionDescription,
+            ReceiverId = wallet.Id,
+            StripeSessionId = session.Id,
+            Start = DateTimeOffset.Now,
+            Status = TransactionStatus.InProgress,
+            Type = TransactionType.Deposit
+        };
+
+        await transactionManager.CreateAsync(transaction);
 
         try
         {

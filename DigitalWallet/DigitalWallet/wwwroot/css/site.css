@@ -17,6 +17,10 @@ html {
     min-height: 100%;
 }
 
+.content {
+    display: none;
+}
+
 .copy-content:hover {
     font-weight: bold;
 }

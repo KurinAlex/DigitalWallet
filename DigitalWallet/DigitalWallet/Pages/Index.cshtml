@@ -1,4 +1,5 @@
 ﻿@page
+@using DigitalWallet.Data
 @using DigitalWallet.Data.Models
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Mvc.TagHelpers
@@ -14,7 +15,13 @@
         <h1 class="display-4">Welcome to DigitalWallet!</h1>
         @if (SignInManager.IsSignedIn(User))
         {
-            @if (Model.Wallet == null)
+            @if (User.IsInRole(StaticData.AdminRoleName))
+            {
+                <div>
+                    <a class="btn btn-primary w-100" asp-page="./Companies">Manage companies</a>
+                </div>
+            }
+            else if (Model.Wallet is null)
             {
                 <div>
                     <a class="btn btn-primary w-100" asp-page="./CreateWallet">Create wallet</a>

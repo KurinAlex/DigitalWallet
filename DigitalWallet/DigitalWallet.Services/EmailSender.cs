@@ -1,32 +1,24 @@
-﻿using DigitalWallet.Services.Models;
+﻿using DigitalWallet.Services.Options;
+
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace DigitalWallet.Services;
 
-public class EmailSender(
-    IOptions<EmailSenderOptions> optionsAccessor,
-    ILogger<EmailSender> logger)
-    : IEmailSender
+public class EmailSender(IOptions<EmailSenderOptions> optionsAccessor, ILogger<EmailSender> logger) : IEmailSender
 {
     private readonly ILogger _logger = logger;
 
-    public EmailSenderOptions Options { get; } = optionsAccessor.Value;
+    private EmailSenderOptions Options => optionsAccessor.Value;
 
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
-        if (string.IsNullOrEmpty(Options.SendGridKey))
-        {
-            throw new Exception("Null SendGridKey");
-        }
-
-        if (string.IsNullOrEmpty(Options.SenderEmail))
-        {
-            throw new Exception("Null SenderEmail");
-        }
+        ArgumentException.ThrowIfNullOrEmpty(Options.SendGridKey, nameof(optionsAccessor.Value.SendGridKey));
+        ArgumentException.ThrowIfNullOrEmpty(Options.SenderEmail, nameof(optionsAccessor.Value.SenderEmail));
 
         await Execute(Options.SendGridKey, Options.SenderEmail, subject, message, toEmail);
     }
@@ -45,8 +37,8 @@ public class EmailSender(
 
         msg.SetClickTracking(false, false);
         var response = await client.SendEmailAsync(msg);
-        _logger.LogInformation(response.IsSuccessStatusCode
-            ? $"Email to {toEmail} queued successfully!"
-            : $"Failure Email to {toEmail}");
+        _logger.LogInformation(
+            response.IsSuccessStatusCode ? "Email to {ToEmail} queued successfully!" : "Failure Email to {ToEmail}",
+            toEmail);
     }
 }

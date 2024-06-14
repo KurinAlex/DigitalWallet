@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using Microsoft.EntityFrameworkCore;
+
 using Stripe.Checkout;
 
 namespace DigitalWallet.Data.Models;
 
+[Index(nameof(StripeSessionId), IsUnique = true)]
 public class Transaction : IEntity
 {
     private Session? _stripeSession;

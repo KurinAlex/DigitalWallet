@@ -21,6 +21,11 @@ public class TransactionManager(ApplicationDbContext dbContext) : Manager<Transa
             .SingleOrDefaultAsync(w => w.Id == id);
     }
 
+    public Task<Transaction?> FindByStripeSessionId(string stripeSessionId)
+    {
+        return _dbContext.Transactions.SingleOrDefaultAsync(w => w.StripeSessionId == stripeSessionId);
+    }
+
     public Task<List<TransactionViewModel>> GetTransactionsAsync(Wallet wallet)
     {
         return _dbContext.Transactions

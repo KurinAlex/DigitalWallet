@@ -286,6 +286,13 @@ namespace DigitalWallet.Data.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_StripeSessionId",
+                table: "Transactions",
+                column: "StripeSessionId",
+                unique: true,
+                filter: "[StripeSessionId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Wallets_ClientId",
                 table: "Wallets",
                 column: "ClientId",

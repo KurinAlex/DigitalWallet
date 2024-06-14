@@ -190,6 +190,10 @@ namespace DigitalWallet.Data.Migrations
 
                     b.HasIndex("SenderId");
 
+                    b.HasIndex("StripeSessionId")
+                        .IsUnique()
+                        .HasFilter("[StripeSessionId] IS NOT NULL");
+
                     b.ToTable("Transactions");
                 });
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalWallet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240613114520_Create")]
+    [Migration("20240614105006_Create")]
     partial class Create
     {
         /// <inheritdoc />
@@ -192,6 +192,10 @@ namespace DigitalWallet.Data.Migrations
                     b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderId");
+
+                    b.HasIndex("StripeSessionId")
+                        .IsUnique()
+                        .HasFilter("[StripeSessionId] IS NOT NULL");
 
                     b.ToTable("Transactions");
                 });

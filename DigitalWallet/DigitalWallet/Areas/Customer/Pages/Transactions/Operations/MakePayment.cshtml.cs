@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-
-namespace DigitalWallet.Pages;
+namespace DigitalWallet.Areas.Customer.Pages.Transactions.Operations;
 
 public class MakePaymentModel(
     CompanyManager companyManager,
@@ -88,7 +87,7 @@ public class MakePaymentModel(
             await transactionManager.SetFailedAndFinishAsync(transaction);
         }
 
-        return RedirectToPage("TransactionDetails", new { id = transaction.Id });
+        return RedirectToPage("/Transactions/TransactionDetails", new { id = transaction.Id });
     }
 
     private async Task PopulateCompanies(Guid? selectedId = null)

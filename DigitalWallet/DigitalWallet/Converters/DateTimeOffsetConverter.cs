@@ -12,7 +12,7 @@ namespace DigitalWallet.Converters
 
         public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value.UtcDateTime.ToString("f"));
+            writer.WriteStringValue(value.UtcDateTime.ToString("MMMM dd, yyyy HH:mm"));
         }
     }
 }

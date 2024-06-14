@@ -2,11 +2,11 @@
 using DigitalWallet.Helpers;
 using DigitalWallet.Services.Managers;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Identity;
 
-namespace DigitalWallet.Pages;
+namespace DigitalWallet.Areas.Customer.Pages.Transactions;
 
 public class TransactionsModel(
     UserManager<Client> clientManager,

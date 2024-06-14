@@ -1,15 +1,16 @@
 ﻿@page
-@model DigitalWallet.Pages.TransactionsModel
+@model DigitalWallet.Areas.Customer.Pages.Transactions.TransactionsModel
 @{
     ViewData["Title"] = "Transactions";
 }
 
 <h1 class="text-center">@ViewData["Title"]</h1>
 <div class="row justify-content-md-center">
-    <div class="col-md-10">
+    <div class="col-md">
         <table id="transactions-table" class="table display w-100">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>Subject</th>
                 <th>Type</th>
                 <th>Time</th>
@@ -18,7 +19,7 @@
             </tr>
             </thead>
         </table>
-        <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+        <a asp-area="" asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>
 </div>
 

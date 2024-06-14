@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace DigitalWallet.Pages;
+namespace DigitalWallet.Areas.Customer.Pages.Transactions.Operations;
 
 public class TransferFundsModel(
     UserManager<Client> userManager,
@@ -52,7 +52,7 @@ public class TransferFundsModel(
             return Page();
         }
 
-        Wallet? receiverWallet = default;
+        Data.Models.Wallet? receiverWallet = default;
         var receiverClient = await userManager.FindByEmailAsync(Input.Receiver);
 
         if (receiverClient is not null)
@@ -100,6 +100,6 @@ public class TransferFundsModel(
             await transactionManager.SetFailedAndFinishAsync(transaction);
         }
 
-        return RedirectToPage("TransactionDetails", new { id = transaction.Id });
+        return RedirectToPage("/Transactions/TransactionDetails", new { id = transaction.Id });
     }
 }

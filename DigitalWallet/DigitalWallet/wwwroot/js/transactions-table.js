@@ -12,6 +12,9 @@
         ],
         columns: [
             {
+                data: 'id'
+            },
+            {
                 data: 'subject'
             },
             {
@@ -43,14 +46,14 @@
             }
         ],
         order: {
-            idx: 2,
+            idx: 3,
             dir: 'desc'
         }
     });
 
     table.on('click', 'tbody tr', function () {
         let data = table.row(this).data();
-        location.href = `/TransactionDetails?id=${data['id']}`;
+        location.href = `TransactionDetails?id=${data['id']}`;
     });
 
     table.columns.adjust();

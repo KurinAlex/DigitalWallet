@@ -1,9 +1,9 @@
 ﻿@page
 @using DigitalWallet.Data.Models
-@model DigitalWallet.Pages.TransactionDetailsModel
+@model DigitalWallet.Areas.Customer.Pages.Transactions.TransactionDetailsModel
 
 @{
-    ViewData["Title"] = "Transfer Details";
+    ViewData["Title"] = "Transaction Details";
 }
 
 <div class="h-100 row justify-content-center">
@@ -190,13 +190,40 @@
                             else
                             {
                                 <dd id="content-email" class="content">
-                                    @Html.DisplayFor(model => model.Transaction.Company!.Email)
+                                    @if (Model.Transaction.Company.Email is null)
+                                    {
+                                        <span class="text-danger">
+                                            Not available
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(model => model.Transaction.Company!.Email)
+                                    }
                                 </dd>
                                 <dd id="content-phone" class="copy-content content">
-                                    @Html.DisplayFor(model => model.Transaction.Company!.Phone)
+                                    @if (Model.Transaction.Company.Phone is null)
+                                    {
+                                        <span class="text-danger">
+                                            Not available
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(model => model.Transaction.Company!.Phone)
+                                    }
                                 </dd>
                                 <dd id="content-site" class="content">
-                                    @Html.DisplayFor(model => model.Transaction.Company!.Site)
+                                    @if (Model.Transaction.Company.Site is null)
+                                    {
+                                        <span class="text-danger">
+                                            Not available
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(model => model.Transaction.Company!.Site)
+                                    }
                                 </dd>
                             }
                             break;
@@ -204,8 +231,8 @@
                 </dl>
             </div>
         </div>
-        <a asp-page="/Transactions" class="w-100 btn btn-lg btn-primary">To Transactions List</a>
-        <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+        <a asp-page="Transactions" class="w-100 btn btn-lg btn-primary">To Transactions List</a>
+        <a asp-area="" asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>
 </div>
 
@@ -213,24 +240,5 @@
     @{
         await Html.RenderPartialAsync("_NotificationsPartial");
     }
-    <script>
-        $(document).ready(function () {
-            showSelected();
-        });
-
-        $('#contacts').on('change',
-            function () {
-                $('.content').each(function () {
-                    $(this).hide();
-                });
-
-                showSelected();
-            });
-
-        function showSelected() {
-
-            const value = $('#contacts').find(":selected").val();
-            $(`#content-${value}`).show();
-        }
-    </script>
+    <script src="~/js/contacts.js"></script>
 }

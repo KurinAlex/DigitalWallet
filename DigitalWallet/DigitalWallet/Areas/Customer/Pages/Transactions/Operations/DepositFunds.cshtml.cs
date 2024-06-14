@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using Stripe.Checkout;
 
-namespace DigitalWallet.Pages;
+namespace DigitalWallet.Areas.Customer.Pages.Transactions.Operations;
 
 public class DepositFundsModel(
     UserManager<Client> userManager,
@@ -78,11 +78,22 @@ public class DepositFundsModel(
 
     public async Task<IActionResult> OnGetProceedPaymentAsync(string sessionId)
     {
+        var transaction = await transactionManager.FindByStripeSessionId(sessionId);
+        if (transaction is not null)
+        {
+            return BadRequest("Transaction is already completed.");
+        }
+
         var service = new SessionService();
         var session = await service.GetAsync(sessionId);
         if (session?.AmountTotal is null)
         {
             return ActionResultHelper.GetEntityNotFoundResult("Session");
+        }
+
+        if (session.PaymentStatus != "paid")
+        {
+            return BadRequest("Transaction is not paid");
         }
 
         var client = await userManager.GetUserAsync(User);
@@ -97,7 +108,7 @@ public class DepositFundsModel(
             return ActionResultHelper.GetClientDoesNotHaveWalletResult();
         }
 
-        var transaction = new Transaction
+        transaction = new Transaction
         {
             Amount = session.AmountTotal.Value / 100m,
             Description = DepositTransactionDescription,
@@ -120,6 +131,6 @@ public class DepositFundsModel(
             await transactionManager.SetFailedAndFinishAsync(transaction);
         }
 
-        return RedirectToPage("TransactionDetails", new { id = transaction.Id });
+        return RedirectToPage("/Transactions/TransactionDetails", new { id = transaction.Id });
     }
 }

@@ -1,5 +1,5 @@
 ﻿@page
-@model DigitalWallet.Pages.CompaniesModel
+@model DigitalWallet.Areas.Admin.Pages.Companies.CompaniesModel
 @{
     ViewData["Title"] = "Companies";
 }
@@ -19,7 +19,7 @@
             </thead>
         </table>
         <a asp-page="CreateCompany" class="w-100 btn btn-lg btn-primary">Create New</a>
-        <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+        <a asp-area="" asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>
 </div>
 

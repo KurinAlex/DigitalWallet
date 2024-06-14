@@ -1,5 +1,5 @@
 ﻿@page
-@model DigitalWallet.Pages.WalletDetailsModel
+@model DigitalWallet.Areas.Customer.Pages.Wallet.WalletDetailsModel
 
 @{
     ViewData["Title"] = "Wallet Details";
@@ -22,7 +22,7 @@
                 @Html.DisplayFor(model => model.Wallet.Balance)
             </dd>
         </dl>
-        <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+        <a class="w-100 btn btn-lg btn-secondary" asp-area="" asp-page="/Index">Back to Menu</a>
     </div>
 </div>
 

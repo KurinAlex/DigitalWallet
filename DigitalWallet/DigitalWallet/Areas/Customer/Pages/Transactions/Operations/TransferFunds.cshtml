@@ -1,5 +1,5 @@
 ﻿@page
-@model DigitalWallet.Pages.TransferFundsModel
+@model DigitalWallet.Areas.Customer.Pages.Transactions.Operations.TransferFundsModel
 @{
     ViewData["Title"] = "Transfer Funds";
 }
@@ -26,7 +26,7 @@
             </div>
             <button id="startTransaction" type="submit" class="w-100 btn btn-lg btn-primary mb-2">Transfer</button>
         </form>
-        <a asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+        <a asp-area="" asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
     </div>
 </div>
 

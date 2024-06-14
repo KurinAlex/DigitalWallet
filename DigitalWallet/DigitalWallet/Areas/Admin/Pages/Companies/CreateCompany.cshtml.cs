@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace DigitalWallet.Pages;
+namespace DigitalWallet.Areas.Admin.Pages.Companies;
 
 [Authorize(Roles = StaticData.AdminRoleName)]
 public class CreateCompanyModel(CompanyManager companyManager) : PageModel

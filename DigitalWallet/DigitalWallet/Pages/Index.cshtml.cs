@@ -9,7 +9,7 @@ namespace DigitalWallet.Pages;
 
 public class IndexModel(WalletManager walletManager, UserManager<Client> userManager) : PageModel
 {
-    public Wallet? Wallet { get; set; }
+    public DigitalWallet.Data.Models.Wallet? Wallet { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {

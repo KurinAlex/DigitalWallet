@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace DigitalWallet.Pages;
+namespace DigitalWallet.Areas.Customer.Pages.Wallet;
 
 public class CreateWalletModel(UserManager<Client> userManager, WalletManager walletManager) : PageModel
 {
@@ -18,12 +18,12 @@ public class CreateWalletModel(UserManager<Client> userManager, WalletManager wa
             return ActionResultHelper.GetClientNotFoundResult();
         }
 
-        var wallet = new Wallet
+        var wallet = new Data.Models.Wallet
         {
             ClientId = client.Id
         };
 
         await walletManager.CreateAsync(wallet);
-        return RedirectToPage("/WalletDetails", new { id = wallet.Id });
+        return RedirectToPage("WalletDetails", new { id = wallet.Id });
     }
 }

@@ -1,0 +1,33 @@
+﻿@page
+@model DigitalWallet.Areas.Customer.Pages.Wallet.WalletDetailsModel
+
+@{
+    ViewData["Title"] = "Wallet Details";
+}
+
+<div class="h-100 row justify-content-md-center">
+    <div class="col-md-5 align-content-center">
+        <h1 class="text-center m-3">@ViewData["Title"]</h1>
+        <dl>
+            <dt class="fs-4">
+                @Html.DisplayNameFor(model => model.Wallet.Id)
+            </dt>
+            <dd class="copy-content fs-4">
+                @Html.DisplayFor(model => model.Wallet.Id)
+            </dd>
+            <dt class="fs-4">
+                @Html.DisplayNameFor(model => model.Wallet.Balance)
+            </dt>
+            <dd class="fs-4">
+                @Html.DisplayFor(model => model.Wallet.Balance)
+            </dd>
+        </dl>
+        <a class="w-100 btn btn-lg btn-secondary" asp-area="" asp-page="/Index">Back to Menu</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_NotificationsPartial");
+    }
+}

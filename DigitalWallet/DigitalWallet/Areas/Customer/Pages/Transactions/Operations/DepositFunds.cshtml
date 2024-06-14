@@ -1,0 +1,28 @@
+﻿@page
+@model DigitalWallet.Areas.Customer.Pages.Transactions.Operations.DepositFundsModel
+@{
+    ViewData["Title"] = "Deposit Funds";
+}
+
+<div class="h-100 row justify-content-md-center">
+    <div class="col-md-5 align-content-center">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+        <form method="post" id="submit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Amount" class="form-control" aria-required="true" placeholder="0.00" step="0.01"/>
+                <label asp-for="Input.Amount" class="form-label"></label>
+                <span asp-validation-for="Input.Amount" class="text-danger"></span>
+            </div>
+            <button id="startTransaction" type="submit" class="w-100 btn btn-lg btn-primary mb-2">Deposit</button>
+        </form>
+        <a asp-area="" asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_TransactionsPartial");
+    }
+}

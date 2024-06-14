@@ -1,0 +1,53 @@
+﻿@page
+@using DigitalWallet.Data.Models
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@inject SignInManager<Client> SignInManager
+
+<div class="h-100 row justify-content-md-center text-center">
+    <div class="col-md-5 align-content-center">
+        <h1 class="display-4">Welcome to DigitalWallet!</h1>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            @if (User.IsInRole(StaticData.AdminRoleName))
+            {
+                <div>
+                    <a class="btn btn-primary w-100" asp-area="Admin" asp-page="/Companies/Companies">Manage companies</a>
+                </div>
+            }
+            else if (Model.Wallet is null)
+            {
+                <div>
+                    <a class="btn btn-primary w-100" asp-area="Customer" asp-page="/Wallet/CreateWallet">Create wallet</a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a class="btn btn-primary w-100 m-1" asp-area="Customer" asp-page="/Wallet/WalletDetails">My Wallet</a>
+                </div>
+                <div>
+                    <a class="btn btn-primary w-100 m-1" asp-area="Customer" asp-page="/Transactions/Transactions">My Transactions</a>
+                </div>
+                <div>
+                    <a class="btn btn-primary w-100 m-1" asp-area="Customer" asp-page="/Transactions/Operations/DepositFunds">Deposit Funds</a>
+                </div>
+                <div>
+                    <a class="btn btn-primary w-100 m-1" asp-area="Customer" asp-page="/Transactions/Operations/TransferFunds">Transfer Funds</a>
+                </div>
+                <div>
+                    <a class="btn btn-primary w-100 m-1" asp-area="Customer" asp-page="/Transactions/Operations/MakePayment">Make a Payment</a>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Please <a asp-area="Identity" asp-page="/Account/Register">register</a> or <a asp-area="Identity" asp-page="/Account/Login">log in</a> to be able to complete operations.</p>
+        }
+    </div>
+</div>

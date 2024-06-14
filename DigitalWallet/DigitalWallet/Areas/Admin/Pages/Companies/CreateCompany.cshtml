@@ -1,0 +1,42 @@
+﻿@page
+@model DigitalWallet.Areas.Admin.Pages.Companies.CreateCompanyModel
+@{
+    ViewData["Title"] = "Create Company";
+}
+
+<div class="h-100 row justify-content-md-center">
+    <div class="col-md-5 align-content-center">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating mb-2">
+                <input asp-for="Company.Name" class="form-control" aria-required="true" placeholder="Company"/>
+                <label asp-for="Company.Name" class="form-label"></label>
+                <span asp-validation-for="Company.Name" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Company.Email" class="form-control" aria-required="true" placeholder="Company" />
+                <label asp-for="Company.Email" class="form-label"></label>
+                <span asp-validation-for="Company.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Company.Phone" class="form-control" aria-required="true" placeholder="Company" />
+                <label asp-for="Company.Phone" class="form-label"></label>
+                <span asp-validation-for="Company.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Company.Site" class="form-control" aria-required="true" placeholder="Company" />
+                <label asp-for="Company.Site" class="form-label"></label>
+                <span asp-validation-for="Company.Site" class="text-danger"></span>
+            </div>
+            <input type="submit" value="Create" class="w-100 btn btn-lg btn-primary" />
+        </form>
+        <a asp-page="Companies" class="w-100 btn btn-lg btn-secondary">Back to List</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,36 @@
+﻿@page
+@model DigitalWallet.Areas.Admin.Pages.Companies.DeleteCompanyModel
+@{
+    ViewData["Title"] = "Delete Company";
+}
+
+<div class="h-100 row justify-content-md-center">
+    <div class="col-md-5 align-content-center">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <dl>
+                <dt class="fs-4">
+                    @Html.DisplayNameFor(model => model.Company.Id)
+                </dt>
+                <dd class="fs-4">
+                    @Html.DisplayFor(model => model.Company.Id)
+                </dd>
+                <dt class="fs-4">
+                    @Html.DisplayNameFor(model => model.Company.Name)
+                </dt>
+                <dd class="fs-4">
+                    @Html.DisplayFor(model => model.Company.Name)
+                </dd>
+            </dl>
+            <input type="submit" value="Delete" class="btn btn-lg btn-primary w-100" />
+        </form>
+        <a asp-page="Companies" class="w-100 btn btn-lg btn-secondary">Back to List</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

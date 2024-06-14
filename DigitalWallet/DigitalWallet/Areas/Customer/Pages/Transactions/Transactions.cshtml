@@ -1,0 +1,31 @@
+﻿@page
+@model DigitalWallet.Areas.Customer.Pages.Transactions.TransactionsModel
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+<div class="row justify-content-md-center">
+    <div class="col-md">
+        <table id="transactions-table" class="table display w-100">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Subject</th>
+                <th>Type</th>
+                <th>Time</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+        </table>
+        <a asp-area="" asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_DatatablesPartial");
+    }
+    <script src="~/js/transactions-table.js"></script>
+}

@@ -1,0 +1,16 @@
+﻿@page
+@model DigitalWallet.Areas.Customer.Pages.Wallet.CreateWalletModel
+@{
+    ViewData["Title"] = "Create Wallet?";
+}
+
+<div class="h-100 row justify-content-md-center">
+    <div class="col-md-5 align-content-center">
+        <h1 class="text-center m-3">@ViewData["Title"]</h1>
+        <p class="fs-4">By clicking button below, you confirm that you agree with our <a asp-page="/Privacy">privacy policy</a>.</p>
+        <form class="form-inline" asp-page="/CreateWallet">
+            <input type="submit" value="Create Wallet" class="w-100 btn btn-lg btn-primary" />
+        </form>
+        <a asp-area="" asp-page="/Index" class="w-100 btn btn-lg btn-secondary">Back to Menu</a>
+    </div>
+</div>

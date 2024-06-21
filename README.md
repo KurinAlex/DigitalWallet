@@ -82,9 +82,9 @@ The application follows an MVC/MVVM architecture with the following projects:
 
 - **Visual Studio:** [Download here](https://visualstudio.microsoft.com/downloads/)
 - **.NET SDK:** [Download here](https://dotnet.microsoft.com/download)
-- **SendGrid API key:** [Tutorial](https://www.twilio.com/docs/sendgrid/for-developers/sending-email/api-getting-started)
-- **Stripe API key:** [Tutorial](https://docs.stripe.com/api)
-- **SQL Database:** [SQL Server Express LocalDB](https://www.microsoft.com/sql-server/sql-server-downloads)
+- **SendGrid account and API key:** [Tutorial](https://www.twilio.com/docs/sendgrid/for-developers/sending-email/api-getting-started)
+- **Stripe account and API key:** [Tutorial](https://docs.stripe.com/api)
+- **SQL Database:** [SQL Server](https://www.microsoft.com/sql-server/sql-server-downloads)
 
 #### 1. Install
 
@@ -121,7 +121,19 @@ The content of the `secrets.json` file must have the following structure:
 
 `AdminAccountOptions` is used to configure the default admin user, which will be seeded into the database when the application starts.
 
-#### 3. Enjoy!
+#### 3. Configure Local Database
+
+In order to create your local database, you should run the following command in Visual Studio CLI:
+
+`
+update-database
+`
+
+This will generate and apply SQL scripts for tables creation and configuration.
+
+You can find more on working with database in Entity Framework on [Migrations Overview](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations) page.
+
+#### 4. Enjoy!
 
 Congratulations! You're set up and can work with this solution on your own.
 
